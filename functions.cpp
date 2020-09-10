@@ -14,7 +14,7 @@ constexpr unsigned int str2intc(const char* str, int h = 0)
 
 
 uint16_t* convert(string line){
-    uint16_t data[4];
+    static uint16_t data[4];
     /* 
      * (As hex)
      * First four digits are opcodes
@@ -55,7 +55,7 @@ uint16_t* convert(string line){
 
 
     /*
-     * REGISTER SELECT (IN OCTAL):
+     * REGISTER SELECT (IN HEX):
      * 0 A
      * 1 B
      * 2 X
@@ -63,7 +63,8 @@ uint16_t* convert(string line){
      * 4 Z
      * 5 F
      * 6 H
-     * 7 NONE
+     * 7 STACK
+     * 8 NONE
      */
 
 
@@ -75,6 +76,9 @@ uint16_t* convert(string line){
 
         case str2intc("NOP"):
         data[0] = 0x0000;
+        break;
+        case str2intc("ADD"):
+        data[0] = 0x0353;
         break;
     }
 
@@ -133,24 +137,102 @@ uint16_t* convert(string line){
         data[1] = 0x10;
         break;
     }
-    data[1] = data[1] << 8;
-    
-    
-    cmd = line[4];
-    cmd += line[5];
 
+    
+    data[1] = data[1] << 4;
+    
+    
     switch(line[4]){
-
+        case 'A':
+        data[1] += 0;
+        break;
+        case 'B':
+        data[1] += 1;
+        break;
+        case 'X':
+        data[1] += 2;
+        break;
+        case 'Y':
+        data[1] += 3;
+        break;
+        case 'Z':
+        data[1] += 4;
+        break;
+        case 'F':
+        data[1] += 5;
+        break;
+        case 'H':
+        data[1] += 6;
+        break;
+        case 'S':
+        data[1] += 7;
+        break;
+        case '_':
+        data[1] += 8;
+        break;
 
     }
     
+    
+    data[1] = data[1] << 4;
+    
+
+    switch(line[5]){
+        case 'A':
+        data[1] += 0;
+        break;
+        case 'B':
+        data[1] += 1;
+        break;
+        case 'X':
+        data[1] += 2;
+        break;
+        case 'Y':
+        data[1] += 3;
+        break;
+        case 'Z':
+        data[1] += 4;
+        break;
+        case 'F':
+        data[1] += 5;
+        break;
+        case 'H':
+        data[1] += 6;
+        break;
+        case 'S':
+        data[1] += 7;
+        break;
+        case '_':
+        data[1] += 8;
+        break;
+
+    }
+
+
+    if(line[6] == ' '){
+
+        cmd = line[7];
+        cmd += line[8];
+        cmd += line[9];
+        cmd += line[10];
+
+        data[2] = stoi(cmd, 0, 16);
+        
+        cmd = line[11];
+        cmd += line[12];
+        cmd += line[13];
+        cmd += line[14];
+
+        data[3] = stoi(cmd, 0, 16);
+    }
     return data;
 }
 
 
 
 uint16_t* compile(string code){
-    uint16_t data[65535];
+    static uint16_t data[65535];
+    int g = 0;
     for(int i = 0; i < code.length(); i++){
 
         string line;
@@ -167,15 +249,29 @@ uint16_t* compile(string code){
         printf("%s",line.c_str());
         #endif 
 
-        convert(line);
-
+        uint16_t* compiled = convert(line);
+        data[g] = compiled[0];
+        g++;
+        data[g] = compiled[1];
+        g++;
+        data[g] = compiled[2];
+        g++;
+        data[g] = compiled[3];
+        g++;
         #ifdef DEBUG
         printf("\n");
         #endif 
     }
 
-    return 0;
+    return data;
 }
 
 
 
+bool run(virtualmachine* machine){
+    
+    uint16_t opcode = machine->addrspace[machine->pc];
+    printf("%x",opcode);
+    machine->pc++;
+    return 0;
+}

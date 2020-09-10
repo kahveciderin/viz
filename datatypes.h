@@ -1,4 +1,4 @@
-class virtualmachine{
+struct virtualmachine{
 
     uint16_t pc;
     uint16_t regA;
@@ -9,6 +9,6 @@ class virtualmachine{
     uint16_t regF;
     uint16_t regH;
     uint16_t sp;
-    uint16_t addrspace[65535];
+    uint16_t *addrspace;
 
 };
