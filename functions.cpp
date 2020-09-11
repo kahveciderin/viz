@@ -34,23 +34,11 @@ uint16_t* convert(string line){
 
     /*
      * ADDRESSING MODES (IN HEX):
-     * 0 register           #
-     * 1 fixed              $
-     * 2 address            &
-     * 3 fixed indexed, x   !
-     * 4 fixed indexed, y   ?
-     * 5 fixed indexed, z   +
-     * 6 address indexed, x ~
-     * 7 address indexed, y <
-     * 8 address indexed, z >
-     * 9 stack              @
-     * A stack indexed, x   ^
-     * B stack indexed, y   *
-     * C stack indexed, z   -
-     * D register indexed, x_
-     * E register indexed, y.
-     * F register indexed, z,
-     * 10 none             " " 
+     * 0 value      $
+     * 1 x indexed  #
+     * 2 y indexed  &
+     * 3 xy indexed !
+     * 4 yx indexed ?
      */
 
 
@@ -61,10 +49,10 @@ uint16_t* convert(string line){
      * 2 X
      * 3 Y
      * 4 Z
-     * 5 F
+     * 5 (F)COLOR
      * 6 H
-     * 7 STACK
-     * 8 NONE
+     * 7 (S)STACK
+     * 8 (N)FIXED
      */
 
 
@@ -72,15 +60,8 @@ uint16_t* convert(string line){
      * ADD$_A 000000FF ;adds 0xFF to the register A
      * 
      */
-    switch(str2int(cmd.c_str())){
-
-        case str2intc("NOP"):
-        data[0] = 0x0000;
-        break;
-        case str2intc("ADD"):
-        data[0] = 0x0353;
-        break;
-    }
+    
+    #include "switch.h"
 
 
     switch(line[3]){
@@ -100,42 +81,7 @@ uint16_t* convert(string line){
         case '?':
         data[1] = 0x04;
         break;
-        case '+':
-        data[1] = 0x05;
-        break;
-        case '~':
-        data[1] = 0x06;
-        break;
-        case '<':
-        data[1] = 0x07;
-        break;
-        case '>':
-        data[1] = 0x08;
-        break;
-        case '@':
-        data[1] = 0x09;
-        break;
-        case '^':
-        data[1] = 0x0A;
-        break;
-        case '*':
-        data[1] = 0x0B;
-        break;
-        case '-':
-        data[1] = 0x0C;
-        break;
-        case '_':
-        data[1] = 0x0D;
-        break;
-        case '.':
-        data[1] = 0x0E;
-        break;
-        case ',':
-        data[1] = 0x0F;
-        break;
-        case ' ':
-        data[1] = 0x10;
-        break;
+        
     }
 
     
@@ -167,7 +113,7 @@ uint16_t* convert(string line){
         case 'S':
         data[1] += 7;
         break;
-        case '_':
+        case 'N':
         data[1] += 8;
         break;
 
