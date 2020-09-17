@@ -1,4 +1,4 @@
-opcodes = ["AND", "ADD", "GFX", "NOP", "CLS", "ORN", "NOT", "NOR", "SUB", "MUL", "DIV", "CMP", "JMP", "SQR", "DRW", "XOR"]
+opcodes = ["NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX", "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH", "SET", "GET", "JOZ", "RND"]
 
 print("switch(str2int(cmd.c_str())){")
 a = 0

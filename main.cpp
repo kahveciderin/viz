@@ -3,9 +3,12 @@
 
 
 int main(){
+    /* initialize random seed: */
+    srand (time(NULL));
+    
     virtualmachine machinestate;
     machinestate.sp = 0xFF;
-    uint16_t* a = compile("ADD#NA 000000FF\nAND#NB DEADBEEF\n");
+    uint16_t* a = compile("INP#NA 00000000\nOUT#AA 00680067\n");
     machinestate.push = false;
     machinestate.addrspace = a;
 

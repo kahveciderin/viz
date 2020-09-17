@@ -334,9 +334,11 @@ bool run(virtualmachine* machine){
         data1 += machine->regX;
         break;
     }
+
+
     uint16_t data2 = machine->regF;
 
-
+    bool inc = true;
 
     /* 
      * We have:
@@ -344,16 +346,121 @@ bool run(virtualmachine* machine){
      * data0
      * data1
      * data2 (regF)
+     * out0
+     * out1
      */
     //start program execution
 
+    uint16_t tmp0;
     switch(opcode){
-        
+        case 0x0000:
+        break;
 
+        case 0x0001: //ADD: add first value to the second and write to second
+            data1 += data0;
+            *out1 = data1;
+        break;
+
+        case 0x0002: //SUB: subtract first value from the second and write to the second
+            data1 -= data0;
+            *out1 = data1;
+        break;
+
+        case 0x0003: //MUL: multiply both values and write to the second
+            data1 *= data0;
+            *out1 = data1;
+        break;
+
+        case 0x0004: //DIV: divide values and write to the second
+            data1 = data1 / data0;
+            *out1 = data1;
+        break;
+
+        case 0x0005: //CMP: compare two values (ffff if first is bigger, 1 if second is bigger, 0 if equal)
+            tmp0 = data0 > data1 ? 0xffff : 0x0;
+            data1 = data0 < data1 ? 0x1 : tmp0;
+            *out1 = data1;
+        break;
+
+        case 0x0006: //JMP: jump to an address (first is the base)
+            inc = false;
+            machine->pc = data0;
+        break;
+
+        case 0x0007: //GFX: open a graphics window (WIP)
+        
+        break;
+
+        case 0x0008: //AND: and two values and write to the second
+            data1 = data1 & data0;
+            *out1 = data1;
+        break;
+
+        case 0x0009: //NOT: invert every single bit
+            data1 = !data1;
+            data0 = !data0;
+
+            *out1 = data1;
+            *out0 = data0;
+        break;
+
+        case 0x000A: //OOR: OR two values and write to the second
+            data1 = data1 | data0;
+            *out1 = data1;
+        break;
+
+        case 0x000B: //XOR: XOR two values and write to the second
+            data1 = data1 ^ data0;
+            *out1 = data1;
+        break;
+
+        case 0x000C: //INP: get one character from user and write to the second
+            scanf("%c", &data1);
+            *out1 = data1;
+        break;
+
+        case 0x000D: //OUT: send two characters to the user
+            printf("%c", data0);
+            printf("%c", data1);
+        break;
+
+        case 0x000E: //RSH: binary right shift second value by first value and write to the second
+            data1 = data1 >> data0;
+            *out1 = data1;
+        break;
+
+        case 0x000F: //LSH: binary left shift second value by first value and write to the second
+            data1 = data1 << data0;
+            *out1 = data1;
+        break;
+
+        case 0x0010: //SET: set first address second value
+            machine->addrspace[data1] = data0;
+        break;
+
+        case 0x0011: //GET: get first address to the second
+            data0 = machine->addrspace[data1];
+            *out0 = data0;
+        break;
+
+        case 0x0012: //JOZ: jump to second address if first is zero
+            inc = false;
+            machine->pc = data1 == 0 ? data0 : machine->pc;
+        break;
+
+        case 0x0013: //RND: random number
+            *out1 = rand() % 0xFFFF + 1;
+        break;
+
+        case 0x0014:
+            *out1 = data0;
+        break;
+        
     }
 
+
     //end program execution
-    machine->pc+=4;
+    machine->pc += inc ? 4 : 0;
     return 0;
 }
 
