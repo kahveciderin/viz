@@ -34,8 +34,8 @@ uint16_t* convert(string line){
 
     /*
      * ADDRESSING MODES (IN HEX):
-     * 0 value      $
-     * 1 x indexed  #
+     * 0 value      #
+     * 1 x indexed  $
      * 2 y indexed  &
      * 3 xy indexed !
      * 4 yx indexed ?
@@ -210,6 +210,7 @@ uint16_t* compile(string code){
     }
 
     return data;
+    
 }
 
 
@@ -306,19 +307,52 @@ bool run(virtualmachine* machine){
     }
 
 
-    uint16_t data0;
-    uint16_t data1;
+    uint16_t data0 = *out0;
+    uint16_t data1 = *out1;
 
 
+    switch(addrmode){
+
+        case 0:
+        break;
+
+        case 1:
+        data0 += machine->regX;
+        break;
+
+        case 2:
+        data0 += machine->regY;
+        break;
+
+        case 3:
+        data0 += machine->regX;
+        data1 += machine->regY;
+        break;
+
+        case 4:
+        data0 += machine->regY;
+        data1 += machine->regX;
+        break;
+    }
     uint16_t data2 = machine->regF;
 
 
 
+    /* 
+     * We have:
+     * opcode
+     * data0
+     * data1
+     * data2 (regF)
+     */
     //start program execution
 
+    switch(opcode){
+        
 
+    }
 
-
+    //end program execution
     machine->pc+=4;
     return 0;
 }
