@@ -179,6 +179,11 @@ uint16_t* convert(string line){
 uint16_t* compile(string code){
     static uint16_t data[65535];
     int g = 0;
+
+    
+
+
+    
     for(int i = 0; i < code.length(); i++){
 
         string line;
@@ -195,6 +200,9 @@ uint16_t* compile(string code){
         printf("%s",line.c_str());
         #endif 
 
+        if(line[0] != '#'){
+
+        
         uint16_t* compiled = convert(line);
         data[g] = compiled[0];
         g++;
@@ -206,7 +214,8 @@ uint16_t* compile(string code){
         g++;
         #ifdef DEBUG
         printf("\n");
-        #endif 
+        #endif
+        } 
     }
 
     return data;
@@ -220,12 +229,12 @@ bool run(virtualmachine* machine){
     uint16_t opcode = machine->addrspace[machine->pc];
     
     #ifdef DEBUG
-    printf("%x",opcode);
+    printf("\n\nProgram Counter: %d , %d\nA: 0x%x\nB: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc / 4, machine->pc % 4, machine->regA, machine->regB, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
     #endif
 
-
+    
     //extract instruction data
-
+    uint16_t tmppc = machine->pc;
     bool pull = false;
     uint8_t addrmode = (machine->addrspace[machine->pc + 1] & 0xFF00) >> 8;
     uint8_t registers = (machine->addrspace[machine->pc + 1] & 0xFF);
@@ -349,29 +358,34 @@ bool run(virtualmachine* machine){
      */
     //start program execution
 
+
+
+    //left => 0
+    //right => 1
+
     uint16_t tmp0;
     switch(opcode){
         case 0x0000:
         break;
 
         case 0x0001: //ADD: add first value to the second and write to second
-            data1 += data0;
-            *out0 = data1;
+            data0 += data1;
+            *out0 = data0;
         break;
 
         case 0x0002: //SUB: subtract first value from the second and write to the second
-            data1 -= data0;
-            *out0 = data1;
+            data0 -= data1;
+            *out0 = data0;
         break;
 
         case 0x0003: //MUL: multiply both values and write to the second
-            data1 *= data0;
-            *out0 = data1;
+            data0 *= data1;
+            *out0 = data0;
         break;
 
         case 0x0004: //DIV: divide values and write to the second
-            data1 /= data0;
-            *out0 = data1;
+            data0 /= data1;
+            *out0 = data0;
         break;
 
         case 0x0005: //CMP: compare two values (ffff if first is bigger, 1 if second is bigger, 0 if equal)
@@ -382,7 +396,7 @@ bool run(virtualmachine* machine){
 
         case 0x0006: //JMP: jump to an address (first is the base)
             inc = false;
-            machine->pc = data0;
+            machine->pc = data1;
         break;
 
         case 0x0007: //GFX: open a graphics window (WIP)
@@ -442,8 +456,9 @@ bool run(virtualmachine* machine){
         break;
 
         case 0x0012: //JOZ: jump to second address if first is zero
-            inc = false;
-            machine->pc = data1 == 0 ? data0 : machine->pc;
+            machine->pc = data0 == 0 ? data1 : machine->pc;
+
+            inc = data0 != 0;
         break;
 
         case 0x0013: //RND: random number
@@ -466,14 +481,18 @@ bool run(virtualmachine* machine){
         break;
 
         case 0x0017:
-            data1 = data1 % data0;
-            *out0 = data1;
+            data0 = data0 % data1;
+            *out0 = data0;
         break;
         
     }
 
 
     //end program execution
+
+    if((out0 == &(machine->pc) || out1 == &(machine->pc)) && machine->pc != tmppc ){
+        inc = false;
+    }
     machine->pc += inc ? 4 : 0;
     return 0;
 }
