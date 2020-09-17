@@ -3,11 +3,19 @@
 
 
 int main(){
-    virtualmachine* machinestate;
-    uint16_t* a = compile("ADD$NA 000000FF\nAND$NA DEADFADE\n");
-    printf("%x\n%x\n%x\n%x\n",a[0],a[1],a[2],a[3]);
-    printf("%x\n%x\n%x\n%x\n",a[4],a[5],a[6],a[7]);
-    //machinestate->addrspace = a;
-    //run(machinestate);
+    virtualmachine machinestate;
+    machinestate.sp = 0xFF;
+    uint16_t* a = compile("ADD$NA 000000FF\nAND$NB DEADBEEF\n");
+    machinestate.push = false;
+    machinestate.addrspace = a;
+
+    
+        run(&machinestate);
+        check(&machinestate);
+        printf("\n\n=========================\n\n");
+        run(&machinestate);
+        check(&machinestate);
+        printf("\n\n=========================\n\n");
+    
     return 0;
 }

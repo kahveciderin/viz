@@ -8,7 +8,12 @@ struct virtualmachine{
     uint16_t regZ;
     uint16_t regF;
     uint16_t regH;
-    uint16_t sp;
+    uint8_t sp;
     uint16_t *addrspace;
+    uint16_t tmpstack;
+    bool push;
+    uint16_t null;
+    uint16_t fixed0;
+    uint16_t fixed1;
 
 };

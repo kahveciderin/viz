@@ -5,4 +5,4 @@ a = 0
 for code in opcodes:
 	print("    case str2intc(\""+code+"\"):\n    data[0] = "+hex(a)+";\n    break;")
 	a+=1
-print("}");
+print("}")

@@ -148,7 +148,7 @@ uint16_t* convert(string line){
         case 'S':
         data[1] += 7;
         break;
-        case '_':
+        case 'N':
         data[1] += 8;
         break;
 
@@ -217,7 +217,122 @@ uint16_t* compile(string code){
 bool run(virtualmachine* machine){
     
     uint16_t opcode = machine->addrspace[machine->pc];
+    
+    #ifdef DEBUG
     printf("%x",opcode);
-    machine->pc++;
+    #endif
+
+
+    //extract instruction data
+
+
+    uint8_t addrmode = (machine->addrspace[machine->pc + 1] & 0xFF00) >> 8;
+    uint8_t registers = (machine->addrspace[machine->pc + 1] & 0xFF);
+
+    machine->fixed0 = machine->addrspace[machine->pc + 2];
+    machine->fixed1 = machine->addrspace[machine->pc + 3];
+
+    
+    
+    uint16_t* out0;
+    switch(registers >> 4){
+
+        case 0:
+        out0 = &(machine->regA);
+        break;
+        case 1:
+        out0 = &(machine->regB);
+        break;
+        case 2:
+        out0 = &(machine->regX);
+        break;
+        case 3:
+        out0 = &(machine->regY);
+        break;
+        case 4:
+        out0 = &(machine->regZ);
+        break;
+        case 5:
+        out0 = &(machine->regF);
+        break;
+        case 6:
+        out0 = &(machine->regH);
+        break;
+        case 7:
+        machine->push = true;
+        out0 = &(machine->tmpstack);
+        break;
+        case 8:
+        out0 = &(machine->fixed0);
+        break;
+
+
+    }
+
+
+    uint16_t* out1;
+    switch(registers & 0xF){
+
+        case 0:
+        out1 = &(machine->regA);
+        break;
+        case 1:
+        out1 = &(machine->regB);
+        break;
+        case 2:
+        out1 = &(machine->regX);
+        break;
+        case 3:
+        out1 = &(machine->regY);
+        break;
+        case 4:
+        out1 = &(machine->regZ);
+        break;
+        case 5:
+        out1 = &(machine->regF);
+        break;
+        case 6:
+        out1 = &(machine->regH);
+        break;
+        case 7:
+        machine->push = true;
+        out1 = &(machine->tmpstack);
+        break;
+        case 8:
+        out1 = &(machine->fixed1);
+        break;
+
+
+    }
+
+
+    uint16_t data0;
+    uint16_t data1;
+
+
+    uint16_t data2 = machine->regF;
+
+
+
+    //start program execution
+
+
+
+
+    machine->pc+=4;
+    return 0;
+}
+
+
+bool check(virtualmachine* machine){
+    if(machine->pc > 0xFFFE)    machine->pc = 0;
+
+    //stack 
+    if(machine->push){
+        machine->addrspace[0xFF00 + machine->sp] = machine->tmpstack;
+        if(machine->sp == 0) machine->sp = 0xFF;
+        else machine->sp--;
+    }
+    machine->null = 0;
     return 0;
 }
