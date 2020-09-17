@@ -51,7 +51,7 @@ uint16_t* convert(string line){
      * 4 Z
      * 5 (F)COLOR
      * 6 H
-     * 7 (S)STACK
+     * 7 (I)INSTRUCTION POINTER
      * 8 (N)FIXED
      */
 
@@ -145,7 +145,7 @@ uint16_t* convert(string line){
         case 'H':
         data[1] += 6;
         break;
-        case 'S':
+        case 'I':
         data[1] += 7;
         break;
         case 'N':
@@ -164,10 +164,10 @@ uint16_t* convert(string line){
 
         data[2] = stoi(cmd, 0, 16);
         
-        cmd = line[11];
-        cmd += line[12];
+        cmd = line[12];
         cmd += line[13];
         cmd += line[14];
+        cmd += line[15];
 
         data[3] = stoi(cmd, 0, 16);
     }
@@ -226,7 +226,7 @@ bool run(virtualmachine* machine){
 
     //extract instruction data
 
-
+    bool pull = false;
     uint8_t addrmode = (machine->addrspace[machine->pc + 1] & 0xFF00) >> 8;
     uint8_t registers = (machine->addrspace[machine->pc + 1] & 0xFF);
 
@@ -260,8 +260,7 @@ bool run(virtualmachine* machine){
         out0 = &(machine->regH);
         break;
         case 7:
-        machine->push = true;
-        out0 = &(machine->tmpstack);
+        out0 = &(machine->pc);
         break;
         case 8:
         out0 = &(machine->fixed0);
@@ -296,8 +295,7 @@ bool run(virtualmachine* machine){
         out1 = &(machine->regH);
         break;
         case 7:
-        machine->push = true;
-        out1 = &(machine->tmpstack);
+        out1 = &(machine->pc);
         break;
         case 8:
         out1 = &(machine->fixed1);
@@ -358,22 +356,22 @@ bool run(virtualmachine* machine){
 
         case 0x0001: //ADD: add first value to the second and write to second
             data1 += data0;
-            *out1 = data1;
+            *out0 = data1;
         break;
 
         case 0x0002: //SUB: subtract first value from the second and write to the second
             data1 -= data0;
-            *out1 = data1;
+            *out0 = data1;
         break;
 
         case 0x0003: //MUL: multiply both values and write to the second
             data1 *= data0;
-            *out1 = data1;
+            *out0 = data1;
         break;
 
         case 0x0004: //DIV: divide values and write to the second
-            data1 = data1 / data0;
-            *out1 = data1;
+            data1 /= data0;
+            *out0 = data1;
         break;
 
         case 0x0005: //CMP: compare two values (ffff if first is bigger, 1 if second is bigger, 0 if equal)
@@ -455,6 +453,22 @@ bool run(virtualmachine* machine){
         case 0x0014:
             *out1 = data0;
         break;
+
+        case 0x0015:
+            machine->addrspace[0xFF00 + machine->sp] = data0;
+            machine->sp--;
+
+        break;
+
+        case 0x0016:
+            machine->sp++;
+            *out1 = machine->addrspace[0xFF00 + machine->sp];
+        break;
+
+        case 0x0017:
+            data1 = data1 % data0;
+            *out0 = data1;
+        break;
         
     }
 
@@ -468,12 +482,6 @@ bool run(virtualmachine* machine){
 bool check(virtualmachine* machine){
     if(machine->pc > 0xFFFE)    machine->pc = 0;
 
-    //stack 
-    if(machine->push){
-        machine->addrspace[0xFF00 + machine->sp] = machine->tmpstack;
-        if(machine->sp == 0) machine->sp = 0xFF;
-        else machine->sp--;
-    }
     machine->null = 0;
     return 0;
 }

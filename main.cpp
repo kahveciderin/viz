@@ -8,17 +8,15 @@ int main(){
     
     virtualmachine machinestate;
     machinestate.sp = 0xFF;
-    uint16_t* a = compile("INP#NA 00000000\nOUT#AA 00680067\n");
+
+    machinestate.regA = 0x9964;
+    machinestate.regB = 0x000A;
+    uint16_t* a = compile("SUB#AB 0000 0000\n");
     machinestate.push = false;
     machinestate.addrspace = a;
 
-    
         run(&machinestate);
         check(&machinestate);
-        printf("\n\n=========================\n\n");
-        run(&machinestate);
-        check(&machinestate);
-        printf("\n\n=========================\n\n");
-    
+        printf("0x%x\n0x%x", machinestate.regA, machinestate.regB);
     return 0;
 }

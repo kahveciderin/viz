@@ -62,4 +62,13 @@ switch(str2int(cmd.c_str())){
     case str2intc("MOV"):
     data[0] = 0x14;
     break;
+    case str2intc("PSH"):
+    data[0] = 0x15;
+    break;
+    case str2intc("POP"):
+    data[0] = 0x16;
+    break;
+    case str2intc("MOD"):
+    data[0] = 0x17;
+    break;
 }
