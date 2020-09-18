@@ -15,5 +15,13 @@ struct virtualmachine{
     uint16_t null;
     uint16_t fixed0;
     uint16_t fixed1;
+    bool halt;
+
+};
+
+struct label{
+
+    char name[3];
+    uint16_t addr;
 
 };

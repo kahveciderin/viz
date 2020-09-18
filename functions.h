@@ -1,3 +1,6 @@
+#include<iostream>
+#include <fstream>
+#include <unistd.h>
 #include <stdint.h>
 #include "datatypes.h"
 #include <string>

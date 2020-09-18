@@ -1,0 +1,13 @@
+JMP#NN 0000 .prg
+:txt
+$Hello, World!
+:prg
+MOV#NX 0000 0000
+:lop
+GET?NA .txt 0000
+OUT#AN 0000 0000
+ADD#XN 0000 0001
+JOZ#AN 0000 .end
+JMP#NN 0000 .lop
+:end
+HLT#NN 0000 0000

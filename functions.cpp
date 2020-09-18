@@ -12,7 +12,6 @@ constexpr unsigned int str2intc(const char* str, int h = 0)
 }
 
 
-
 uint16_t* convert(string line){
     static uint16_t data[4];
     /* 
@@ -180,9 +179,9 @@ uint16_t* compile(string code){
     static uint16_t data[65535];
     int g = 0;
 
-    
+    label labels[65535];
 
-
+    int q = 0;
     
     for(int i = 0; i < code.length(); i++){
 
@@ -195,14 +194,96 @@ uint16_t* compile(string code){
             
             i++;
         }
+
+        if(line[0] != '#' && line[0] != ':'){
+            g+=4;
+
+        }
+        if(line[0] == '$'){
+
+            //printf("%d", g);
+            g+=strlen(line.c_str());
+            g-=4;
+            //printf(" %d\n", g);
+        }
+
+        if(line[0] == ':'){
+            memcpy(labels[q].name, line.c_str()+1, 3);
+            labels[q].addr = g;
+
+            //printf("Label: %s %x\n", labels[q].name, labels[q].addr);
+            q++;
+        }
+
+    }
+    g = 0;
+    for(int i = 0; i < code.length(); i++){
+
+        string line;
         
+        while(code[i] != TERMINATOR){
+            string s;
+            s = code[i]; 
+            line.append(s); 
+            
+            i++;
+        }
+        if(line[0] == '$'){
+
+
+            for(int f = 1; f <= strlen(line.c_str()) - 1; f++){
+                data[g] = line[f];
+                //printf("%c\n", data[g]);
+                g++;
+            }
+
+            data[g] = 0;
+            g++;
+        }
+        else if(line[0] != '#' && line[0] != ':'){
+        //printf("*\n");
+        for(int v = 0; v <= q; v++){
+            string fromf(labels[v].name);
+            
+            //string fromf = ".stt";
+            //string tof = to_string(labels[v].addr);
+
+            uint16_t tmpdbg = labels[v].addr;
+            string dot = ".";
+            fromf = dot.append(fromf);
+            char val[5];
+            //printf("%s\n", fromf.c_str());
+            if(tmpdbg & 0x000F)
+            sprintf(val, "000%X", tmpdbg);
+
+            if(tmpdbg & 0x00F0)
+            sprintf(val, "00%X", tmpdbg);
+
+            if(tmpdbg & 0x0F00)
+            sprintf(val, "0%X", tmpdbg);
+            
+            if(tmpdbg == 0)
+            sprintf(val, "000%X", tmpdbg);
+
+            
+            string tof(val);
+            
+            int index;
+            while((index = line.find(fromf)) != string::npos) {
+            line.replace(index, tof.length(), tof); //remove and replace from that position
+            
+            }
+
+            
+            //printf("*\n");
+        }
+        //printf("Line: %s\n\n", line.c_str());
+
+
         #ifdef DEBUG
-        printf("%s",line.c_str());
-        #endif 
+        printf("%s\n", line.c_str());
+        #endif
 
-        if(line[0] != '#'){
-
-        
         uint16_t* compiled = convert(line);
         data[g] = compiled[0];
         g++;
@@ -215,9 +296,14 @@ uint16_t* compile(string code){
         #ifdef DEBUG
         printf("\n");
         #endif
-        } 
+        
+        }
+        
+
     }
 
+
+    
     return data;
     
 }
@@ -229,7 +315,7 @@ bool run(virtualmachine* machine){
     uint16_t opcode = machine->addrspace[machine->pc];
     
     #ifdef DEBUG
-    printf("\n\nProgram Counter: %d , %d\nA: 0x%x\nB: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc / 4, machine->pc % 4, machine->regA, machine->regB, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
+    printf("\n\nProgram Counter: %d\nA: 0x%x\nB: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc, machine->regA, machine->regB, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
     #endif
 
     
@@ -324,21 +410,21 @@ bool run(virtualmachine* machine){
         break;
 
         case 1:
-        data0 += machine->regX;
+        data1 += machine->regX;
         break;
 
         case 2:
-        data0 += machine->regY;
-        break;
-
-        case 3:
-        data0 += machine->regX;
         data1 += machine->regY;
         break;
 
-        case 4:
-        data0 += machine->regY;
+        case 3:
         data1 += machine->regX;
+        data0 += machine->regY;
+        break;
+
+        case 4:
+        data1 += machine->regY;
+        data0 += machine->regX;
         break;
     }
 
@@ -394,7 +480,7 @@ bool run(virtualmachine* machine){
             *out1 = data1;
         break;
 
-        case 0x0006: //JMP: jump to an address (first is the base)
+        case 0x0006: //JMP: jump to an address (second is the base)
             inc = false;
             machine->pc = data1;
         break;
@@ -447,12 +533,12 @@ bool run(virtualmachine* machine){
         break;
 
         case 0x0010: //SET: set first address second value
-            machine->addrspace[data1] = data0;
+            machine->addrspace[data0] = data1;
         break;
 
         case 0x0011: //GET: get first address to the second
-            data0 = machine->addrspace[data1];
-            *out0 = data0;
+            data1 = machine->addrspace[data0];
+            *out1 = data1;
         break;
 
         case 0x0012: //JOZ: jump to second address if first is zero
@@ -462,6 +548,7 @@ bool run(virtualmachine* machine){
         break;
 
         case 0x0013: //RND: random number
+            *out0 = rand() % 0xFFFF + 1;
             *out1 = rand() % 0xFFFF + 1;
         break;
 
@@ -483,6 +570,16 @@ bool run(virtualmachine* machine){
         case 0x0017:
             data0 = data0 % data1;
             *out0 = data0;
+        break;
+
+        case 0x0018:
+            machine->halt = true;
+        break;
+
+        case 0x0019: //JNZ: jump to second address if first is not zero
+            machine->pc = data0 != 0 ? data1 : machine->pc;
+
+            inc = data0 != 0;
         break;
         
     }

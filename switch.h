@@ -71,4 +71,10 @@ switch(str2int(cmd.c_str())){
     case str2intc("MOD"):
     data[0] = 0x17;
     break;
+    case str2intc("HLT"):
+    data[0] = 0x18;
+    break;
+    case str2intc("JNZ"):
+    data[0] = 0x19;
+    break;
 }

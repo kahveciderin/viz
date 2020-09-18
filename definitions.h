@@ -1,2 +1,2 @@
 #define TERMINATOR '\n'
-#define DEBUG
+//#define DEBUG
