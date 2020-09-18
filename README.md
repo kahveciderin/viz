@@ -2,7 +2,4 @@
 Just a virtual assembly language for a virtual machine
 
 
-Syntax:
-
-[OPCODE][ADDR MODE][REG0][REG1] space [DATA0] space [DATA1]
-
+For more info and documentation, check our wiki.
