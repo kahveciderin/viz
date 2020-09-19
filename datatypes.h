@@ -21,7 +21,7 @@ struct virtualmachine{
 
 struct label{
 
-    char name[3];
+    char name[32];
     uint16_t addr;
 
 };

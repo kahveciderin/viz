@@ -1,26 +1,25 @@
-JMP#NN 0000 .prg
-:prf
-MOV#NX 0000 0000
-:lop
-GET?BA 0000 0000
-OUT#AN 0000 0000
-ADD#XN 0000 0001
-JOZ#AH 0000 0000
-JMP#NN 0000 .lop
-################
-:prg
-MOV#NB .txt 0000
-MOV#NH .st1 0000
-JMP#NN 0000 .prf
-:st1
-OUT#NN 0000 000A
-MOV#NB .tx2 0000
-MOV#NH .st2 0000
-JMP#NN 0000 .prf
-HLT#NN 0000 0000
-:st2
-HLT#NN 0000 0000
-:tx2
+JMP#NN . .program
+:print
+MOV#NX . .
+:loop1
+GET?BA . .
+OUT#AN . .
+ADD#XN . 0001
+JOZ#AH . .
+JMP#NN . .loop1
+:program
+MOV#NB .text .
+MOV#NH .step1 .
+JMP#NN . .print
+:step1
+OUT#NN . 000A
+MOV#NB .text2 .
+MOV#NH .step2 .
+JMP#NN . .print
+HLT#NN . .
+:step2
+HLT#NN . .
+:text2
 $This is another text
-:txt
+:text
 $Hello, world!

@@ -208,7 +208,7 @@ uint16_t* compile(string code){
         }
 
         if(line[0] == ':'){
-            memcpy(labels[q].name, line.c_str()+1, 3);
+            memcpy(labels[q].name, line.c_str()+1, strlen(line.c_str()) - 1);
             labels[q].addr = g;
 
             //printf("Label: %s %x\n", labels[q].name, labels[q].addr);
@@ -217,6 +217,43 @@ uint16_t* compile(string code){
 
     }
     g = 0;
+    for(int v = 0; v <= q; v++){ //"=" lets us use just one . to reference 0
+        string fromf(labels[v].name);
+
+        uint16_t tmpdbg = labels[v].addr;
+        string dot = ".";
+        fromf = dot.append(fromf);
+        char val[32];
+        //printf("%s\n", fromf.c_str());
+        if(tmpdbg & 0x000F)
+        sprintf(val, "000%X", tmpdbg);
+        if(tmpdbg & 0x00F0)
+        sprintf(val, "00%X", tmpdbg);
+        if(tmpdbg & 0x0F00)
+        sprintf(val, "0%X", tmpdbg);
+          
+        if(tmpdbg == 0)
+        sprintf(val, "000%X", tmpdbg);
+        
+            
+        string tof(val);
+        //printf("Label: %s %x (%s)\n", fromf.c_str(), labels[v].addr, tof.c_str());
+        int index;
+        while((index = code.find(fromf + " ")) != string::npos) {
+            //code.erase(index, tof.length());
+            code.replace(index, fromf.length(), tof); //remove and replace from that position
+        }
+        index = 0;
+        while((index = code.find(fromf + "\n")) != string::npos) {
+            //code.erase(index, tof.length());
+            code.replace(index, fromf.length(), tof); //remove and replace from that position
+        }
+
+            
+            //printf("*\n");
+    }
+    //printf("%s\n", code.c_str());
+
     for(int i = 0; i < code.length(); i++){
 
         string line;
@@ -242,41 +279,7 @@ uint16_t* compile(string code){
         }
         else if(line[0] != '#' && line[0] != ':'){
         //printf("*\n");
-        for(int v = 0; v <= q; v++){
-            string fromf(labels[v].name);
-            
-            //string fromf = ".stt";
-            //string tof = to_string(labels[v].addr);
 
-            uint16_t tmpdbg = labels[v].addr;
-            string dot = ".";
-            fromf = dot.append(fromf);
-            char val[5];
-            //printf("%s\n", fromf.c_str());
-            if(tmpdbg & 0x000F)
-            sprintf(val, "000%X", tmpdbg);
-
-            if(tmpdbg & 0x00F0)
-            sprintf(val, "00%X", tmpdbg);
-
-            if(tmpdbg & 0x0F00)
-            sprintf(val, "0%X", tmpdbg);
-            
-            if(tmpdbg == 0)
-            sprintf(val, "000%X", tmpdbg);
-
-            
-            string tof(val);
-            
-            int index;
-            while((index = line.find(fromf)) != string::npos) {
-            line.replace(index, tof.length(), tof); //remove and replace from that position
-            
-            }
-
-            
-            //printf("*\n");
-        }
         //printf("Line: %s\n\n", line.c_str());
 
 
