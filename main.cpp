@@ -20,7 +20,9 @@ int main(int argc, char* argv[]){
 
     uint16_t* a = compile(data + "\n");
 
-
+    for(int i = 0; i < 65535; i++){
+        printf("0x%x\n", a[i]);
+    }
     machinestate.push = false;
     machinestate.halt = false;
     machinestate.addrspace = a;

@@ -196,6 +196,17 @@ uint16_t* compile(string code){
             i++;
         }
 
+        
+        if(line[0] == '@'){
+            if(line[1] == '!'){
+                g += stoi(line.substr(2,6), 0, 16);
+            }else{
+                g = stoi(line.substr(1,5), 0, 16);
+            }
+        
+        }
+
+
         if(line[0] != '#' && line[0] != ':'){
             g+=4;
 
