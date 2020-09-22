@@ -80,4 +80,10 @@ switch(str2int(cmd.c_str())){
     case str2intc("POW"):
     data[0] = 0x1A;
     break;
+    case str2intc("CAL"):
+    data[0] = 0x1B;
+    break;
+    case str2intc("RET"):
+    data[0] = 0x1C;
+    break;
 }

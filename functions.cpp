@@ -181,8 +181,9 @@ uint16_t* compile(string code){
 
     label labels[65535];
 
-    int q = 0;
-    
+    int q = 1;
+    memcpy(labels[0].name, "", 0);
+    labels[0].addr = 0x0000;
     for(int i = 0; i < code.length(); i++){
 
         string line;
@@ -216,8 +217,9 @@ uint16_t* compile(string code){
         }
 
     }
+    
     g = 0;
-    for(int v = 0; v <= q; v++){ //"=" lets us use just one . to reference 0
+    for(int v = 0; v < q; v++){ //"=" lets us use just one . to reference 0
         string fromf(labels[v].name);
 
         uint16_t tmpdbg = labels[v].addr;
@@ -586,6 +588,15 @@ bool run(virtualmachine* machine){
         case 0x001A: //POW: first pow second to first
             data0 = pow(data0, data1);
             *out0 = data0;
+        break;
+        case 0x001B: //CAL: call function
+            machine->addrspace[0xFF00 + machine->sp] = machine->pc + 4;
+            machine->sp--;
+            machine->pc = data1;
+        break;
+        case 0x001C: //RET: return from function
+            machine->sp++;
+            machine->pc = machine->addrspace[0xFF00 + machine->sp];
         break;
         
     }

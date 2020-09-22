@@ -1,3 +1,4 @@
-MOV#NA 0002 .
-POW#AN . 0004
+CAL#NN . .aas
 HLT#NN . .
+:aas
+RET#NN . .
