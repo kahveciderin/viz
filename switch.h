@@ -77,4 +77,7 @@ switch(str2int(cmd.c_str())){
     case str2intc("JNZ"):
     data[0] = 0x19;
     break;
+    case str2intc("POW"):
+    data[0] = 0x1A;
+    break;
 }

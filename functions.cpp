@@ -581,8 +581,11 @@ bool run(virtualmachine* machine){
 
         case 0x0019: //JNZ: jump to second address if first is not zero
             machine->pc = data0 != 0 ? data1 : machine->pc;
-
             inc = data0 != 0;
+        break;
+        case 0x001A: //POW: first pow second to first
+            data0 = pow(data0, data1);
+            *out0 = data0;
         break;
         
     }

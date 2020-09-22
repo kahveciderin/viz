@@ -1,25 +1,3 @@
-JMP#NN . .program
-:print
-MOV#NX . .
-:loop1
-GET?BA . .
-OUT#AN . .
-ADD#XN . 0001
-JOZ#AH . .
-JMP#NN . .loop1
-:program
-MOV#NB .text .
-MOV#NH .step1 .
-JMP#NN . .print
-:step1
-OUT#NN . 000A
-MOV#NB .text2 .
-MOV#NH .step2 .
-JMP#NN . .print
+MOV#NA 0002 .
+POW#AN . 0004
 HLT#NN . .
-:step2
-HLT#NN . .
-:text2
-$This is another text
-:text
-$Hello, world!
