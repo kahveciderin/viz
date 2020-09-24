@@ -626,10 +626,12 @@ bool run(virtualmachine* machine){
             machine->addrspace[0xFF00 + machine->sp] = machine->pc + 4;
             machine->sp--;
             machine->pc = data1;
+            inc = false;
         break;
         case 0x001C: //RET: return from function
             machine->sp++;
             machine->pc = machine->addrspace[0xFF00 + machine->sp];
+            inc = false;
         break;
         
     }
