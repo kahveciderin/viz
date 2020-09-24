@@ -211,7 +211,6 @@ uint16_t* compile(string code){
                 g = stoi(line.substr(1,5), 0, 16);
             }
             g-=4;
-            printf("Line: %x", g);
         }
 
 
