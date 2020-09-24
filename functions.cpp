@@ -206,9 +206,12 @@ uint16_t* compile(string code){
         if(line[0] == '@'){
             if(line[1] == '!'){
                 g += stoi(line.substr(2,6), 0, 16);
+                
             }else{
                 g = stoi(line.substr(1,5), 0, 16);
             }
+            g-=4;
+            printf("Line: %x", g);
         }
 
 
@@ -244,16 +247,18 @@ uint16_t* compile(string code){
         fromf = dot.append(fromf);
         char val[32];
         //printf("%s\n", fromf.c_str());
+        /*sprintf(val, "%X", tmpdbg);
         if(tmpdbg & 0x000F)
         sprintf(val, "000%X", tmpdbg);
         if(tmpdbg & 0x00F0)
         sprintf(val, "00%X", tmpdbg);
         if(tmpdbg & 0x0F00)
         sprintf(val, "0%X", tmpdbg);
-          
         if(tmpdbg == 0)
-        sprintf(val, "000%X", tmpdbg);
-        
+        sprintf(val, "0000");
+        */
+
+       sprintf(val, "%04X", tmpdbg);
             
         string tof(val);
         //printf("Label: %s %x (%s)\n", fromf.c_str(), labels[v].addr, tof.c_str());
@@ -626,6 +631,7 @@ bool run(virtualmachine* machine){
             machine->addrspace[0xFF00 + machine->sp] = machine->pc + 4;
             machine->sp--;
             machine->pc = data1;
+            printf("0x%x", data1);
             inc = false;
         break;
         case 0x001C: //RET: return from function

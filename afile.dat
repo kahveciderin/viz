@@ -1,12 +1,9 @@
-:_read_loop
 INP#NA . .
-SUB#AN . 003B
-JOZ#AN . .end
-ADD#AN . 003B
-PSH#AN . .
-JMP#NN ._read_loop ._read_loop
+JMP#NN . .test
+HLT#NN . .
+@EEEE
+:test
+INP#NA . .
+POP#NC . .
+HLT#NN . .
 
-:end
-POP#AA . .
-OUT#AN . .
-JMP#NN .end .end
