@@ -115,6 +115,9 @@ uint16_t* convert(string line){
         case 'N':
         data[1] += 8;
         break;
+        case 'C':
+        data[1] += 9;
+        break;
 
     }
     
@@ -149,6 +152,9 @@ uint16_t* convert(string line){
         break;
         case 'N':
         data[1] += 8;
+        break;
+        case 'C':
+        data[1] += 9;
         break;
 
     }
@@ -203,7 +209,6 @@ uint16_t* compile(string code){
             }else{
                 g = stoi(line.substr(1,5), 0, 16);
             }
-        
         }
 
 
@@ -222,15 +227,16 @@ uint16_t* compile(string code){
         if(line[0] == ':'){
             memcpy(labels[q].name, line.c_str()+1, strlen(line.c_str()) - 1);
             labels[q].addr = g;
-
-            //printf("Label: %s %x\n", labels[q].name, labels[q].addr);
+            #ifdef DEBUG
+            printf("Label: %s %x\n", labels[q].name, labels[q].addr);
+            #endif
             q++;
         }
 
     }
     
     g = 0;
-    for(int v = 0; v < q; v++){ //"=" lets us use just one . to reference 0
+    for(int v = 0; v < q; v++){ 
         string fromf(labels[v].name);
 
         uint16_t tmpdbg = labels[v].addr;
@@ -278,7 +284,14 @@ uint16_t* compile(string code){
             
             i++;
         }
-        if(line[0] == '$'){
+
+        if(line[0] == '@'){
+            if(line[1] == '!'){
+                g += stoi(line.substr(2,6), 0, 16);
+            }else{
+                g = stoi(line.substr(1,5), 0, 16);
+            }
+        } else if(line[0] == '$'){
 
 
             for(int f = 1; f <= strlen(line.c_str()) - 1; f++){
@@ -331,7 +344,9 @@ bool run(virtualmachine* machine){
     uint16_t opcode = machine->addrspace[machine->pc];
     
     #ifdef DEBUG
-    printf("\n\nProgram Counter: %d\nA: 0x%x\nB: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc, machine->regA, machine->regB, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
+    
+    printf("\n\nProgram Counter: %d\nOPCODE: %s\nA: 0x%x\nB: 0x%x\nC: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc, commands[opcode].c_str(),machine->regA, machine->regB, machine->regC, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
+    fflush(stdout);
     #endif
 
     
@@ -376,6 +391,9 @@ bool run(virtualmachine* machine){
         case 8:
         out0 = &(machine->fixed0);
         break;
+        case 9:
+        out0 = &(machine->regC);
+        break;
 
 
     }
@@ -410,6 +428,9 @@ bool run(virtualmachine* machine){
         break;
         case 8:
         out1 = &(machine->fixed1);
+        break;
+        case 9:
+        out1 = &(machine->regC);
         break;
 
 
@@ -530,6 +551,7 @@ bool run(virtualmachine* machine){
 
         case 0x000C: //INP: get one character from user and write to the second
             scanf("%c", &data1);
+            //data1 = scanf();
             *out1 = data1;
         break;
 

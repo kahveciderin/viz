@@ -20,9 +20,10 @@ int main(int argc, char* argv[]){
 
     uint16_t* a = compile(data + "\n");
 
-    for(int i = 0; i < 65535; i++){
+    /*for(int i = 0; i < 65535; i++){
         printf("0x%x\n", a[i]);
-    }
+    }*/
+    //initscr();
     machinestate.push = false;
     machinestate.halt = false;
     machinestate.addrspace = a;
@@ -33,6 +34,6 @@ int main(int argc, char* argv[]){
         if(machinestate.halt)   break;
     }
     printf("\n");
-        
+    //endwin();
     return 0;
 }

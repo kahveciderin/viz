@@ -8,5 +8,8 @@
 #include <string.h>
 using namespace std;
 #include <stdio.h>
+#include <ctype.h>
+
+//#include <ncurses.h>
 #include "definitions.h"
 #include "functions.cpp"

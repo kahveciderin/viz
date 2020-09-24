@@ -3,6 +3,7 @@ struct virtualmachine{
     uint16_t pc;
     uint16_t regA;
     uint16_t regB;
+    uint16_t regC;
     uint16_t regX;
     uint16_t regY;
     uint16_t regZ;

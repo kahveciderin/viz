@@ -1,3 +1,12 @@
-$a
-@0011
-$a
+:_read_loop
+INP#NA . .
+SUB#AN . 003B
+JOZ#AN . .end
+ADD#AN . 003B
+PSH#AN . .
+JMP#NN ._read_loop ._read_loop
+
+:end
+POP#AA . .
+OUT#AN . .
+JMP#NN .end .end
