@@ -631,7 +631,6 @@ bool run(virtualmachine* machine){
             machine->addrspace[0xFF00 + machine->sp] = machine->pc + 4;
             machine->sp--;
             machine->pc = data1;
-            printf("0x%x", data1);
             inc = false;
         break;
         case 0x001C: //RET: return from function
