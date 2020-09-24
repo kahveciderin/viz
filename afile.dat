@@ -1,9 +1,59 @@
-INP#NA . .
-JMP#NN . .test
-HLT#NN . .
-@EEEE
-:test
-INP#NA . .
-POP#NC . .
-HLT#NN . .
+JMP#NN . .program
 
+# --FUNCTION-- Pass arg to register A to print as ascii on screen
+:print_number
+PSH#BN . .
+PSH#XN . .
+
+MOV#NB 0000 .
+MOV#NX 0000 .
+
+# A = A / 10 ; X = A % 10
+:mod
+ADD#BN . 0001
+MOV#AX . .
+DIV#AN . 000A
+MOD#XN . 000A
+ADD#XN . 0030
+PSH#XN . .
+JOZ#AN . .dgt
+# jump back
+JMP#NN . .mod
+# print newline and leave
+:dgt
+# print loop
+SUB#BN . 0001
+POP#NX . .
+OUT#XN . .
+JOZ#BN . .enf # if B = 0, skip over next jmp
+JMP#NN . .dgt # loop back
+
+:enf
+OUT#NN 000A 000D
+POP#NX . .
+POP#NB . .
+
+RET#NN . . # ret
+# --END PRINT NUMBER
+
+:calc_power
+PSH#CN . .
+PSH#BN . .
+MOV#AC . .
+MOV#NA 0001 .
+:calc_power_loop
+JOZ#BN . .end_calc_power
+MUL#AC . .
+MUL#CC . .
+RSH#NB 0001 .
+JMP#NN . .calc_power_loop
+:end_calc_power
+POP#NB . .
+POP#NC . .
+RET#NN . . # ret
+
+:program
+MOV#NA 0005 .
+MOV#NB 0003 .
+CAL#NN . .calc_power
+CAL#NN . .print_number

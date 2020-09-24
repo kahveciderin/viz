@@ -347,11 +347,7 @@ bool run(virtualmachine* machine){
     
     uint16_t opcode = machine->addrspace[machine->pc];
     
-    #ifdef DEBUG
     
-    printf("\n\nProgram Counter: %d\nOPCODE: %s\nA: 0x%x\nB: 0x%x\nC: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc, commands[opcode].c_str(),machine->regA, machine->regB, machine->regC, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
-    fflush(stdout);
-    #endif
 
     
     //extract instruction data
@@ -366,6 +362,10 @@ bool run(virtualmachine* machine){
     
     
     uint16_t* out0;
+    #ifdef DEBUG
+    char reg0 = 'A';
+    char reg1 = 'A';
+    #endif
     switch(registers >> 4){
 
         case 0:
@@ -373,30 +373,57 @@ bool run(virtualmachine* machine){
         break;
         case 1:
         out0 = &(machine->regB);
+        #ifdef DEBUG
+        reg0 = 'B';
+        #endif
         break;
         case 2:
         out0 = &(machine->regX);
+        #ifdef DEBUG
+        reg0 = 'X';
+        #endif
         break;
         case 3:
         out0 = &(machine->regY);
+        #ifdef DEBUG
+        reg0 = 'Y';
+        #endif
         break;
         case 4:
         out0 = &(machine->regZ);
+        #ifdef DEBUG
+        reg0 = 'Z';
+        #endif
         break;
         case 5:
         out0 = &(machine->regF);
+        #ifdef DEBUG
+        reg0 = 'F';
+        #endif
         break;
         case 6:
         out0 = &(machine->regH);
+        #ifdef DEBUG
+        reg0 = 'H';
+        #endif
         break;
         case 7:
         out0 = &(machine->pc);
+        #ifdef DEBUG
+        reg0 = 'I';
+        #endif
         break;
         case 8:
         out0 = &(machine->fixed0);
+        #ifdef DEBUG
+        reg0 = 'N';
+        #endif
         break;
         case 9:
         out0 = &(machine->regC);
+        #ifdef DEBUG
+        reg0 = 'C';
+        #endif
         break;
 
 
@@ -411,36 +438,65 @@ bool run(virtualmachine* machine){
         break;
         case 1:
         out1 = &(machine->regB);
+        #ifdef DEBUG
+        reg1 = 'B';
+        #endif
         break;
         case 2:
         out1 = &(machine->regX);
+        #ifdef DEBUG
+        reg1 = 'X';
+        #endif
         break;
         case 3:
         out1 = &(machine->regY);
+        #ifdef DEBUG
+        reg1 = 'Y';
+        #endif
         break;
         case 4:
         out1 = &(machine->regZ);
+        #ifdef DEBUG
+        reg1 = 'Z';
+        #endif
         break;
         case 5:
         out1 = &(machine->regF);
+        #ifdef DEBUG
+        reg1 = 'F';
+        #endif
         break;
         case 6:
         out1 = &(machine->regH);
+        #ifdef DEBUG
+        reg1 = 'H';
+        #endif
         break;
         case 7:
         out1 = &(machine->pc);
+        #ifdef DEBUG
+        reg1 = 'I';
+        #endif
         break;
         case 8:
         out1 = &(machine->fixed1);
+        #ifdef DEBUG
+        reg1 = 'N';
+        #endif
         break;
         case 9:
         out1 = &(machine->regC);
+        #ifdef DEBUG
+        reg1 = 'C';
+        #endif
         break;
 
 
     }
 
-
+    #ifdef DEBUG
+    char adrdbg = '#';
+    #endif
     uint16_t data0 = *out0;
     uint16_t data1 = *out1;
 
@@ -452,24 +508,40 @@ bool run(virtualmachine* machine){
 
         case 1:
         data1 += machine->regX;
+        #ifdef DEBUG
+        adrdbg = '$';
+        #endif
         break;
 
         case 2:
         data1 += machine->regY;
+        #ifdef DEBUG
+        adrdbg = '&';
+        #endif
         break;
 
         case 3:
         data1 += machine->regX;
         data0 += machine->regY;
+        #ifdef DEBUG
+        adrdbg = '!';
+        #endif
         break;
 
         case 4:
         data1 += machine->regY;
         data0 += machine->regX;
+        #ifdef DEBUG
+        adrdbg = '?';
+        #endif
         break;
     }
 
-
+    #ifdef DEBUG
+    
+    printf("\n\nProgram Counter: %d\nOPCODE: %s%c%c%c %04X %04X\nA: 0x%x\nB: 0x%x\nC: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc, commands[opcode].c_str(), adrdbg, reg0, reg1, data0, data1, machine->regA, machine->regB, machine->regC, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
+    fflush(stdout);
+    #endif
     uint16_t data2 = machine->regF;
 
     bool inc = true;
