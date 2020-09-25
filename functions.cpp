@@ -109,7 +109,7 @@ uint16_t* convert(string line){
         case 'H':
         data[1] += 6;
         break;
-        case 'S':
+        case 'I':
         data[1] += 7;
         break;
         case 'N':
@@ -117,6 +117,24 @@ uint16_t* convert(string line){
         break;
         case 'C':
         data[1] += 9;
+        break;
+        case 'a':
+        data[1] += 0xA;
+        break;
+        case 'b':
+        data[1] += 0xB;
+        break;
+        case 'z':
+        data[1] += 0xC;
+        break;
+        case 'h':
+        data[1] += 0xD;
+        break;
+        case 'n':
+        data[1] += 0xE;
+        break;
+        case 'c':
+        data[1] += 0xF;
         break;
 
     }
@@ -155,6 +173,24 @@ uint16_t* convert(string line){
         break;
         case 'C':
         data[1] += 9;
+        break;
+        case 'a':
+        data[1] += 0xA;
+        break;
+        case 'b':
+        data[1] += 0xB;
+        break;
+        case 'z':
+        data[1] += 0xC;
+        break;
+        case 'h':
+        data[1] += 0xD;
+        break;
+        case 'n':
+        data[1] += 0xE;
+        break;
+        case 'c':
+        data[1] += 0xF;
         break;
 
     }
@@ -425,6 +461,41 @@ bool run(virtualmachine* machine){
         reg0 = 'C';
         #endif
         break;
+        case 0xA:
+        out0 = &(machine->addrspace[machine->regA]);
+        #ifdef DEBUG
+        reg0 = 'a';
+        #endif
+        break;
+        case 0xB:
+        out0 = &(machine->addrspace[machine->regB]);
+        #ifdef DEBUG
+        reg0 = 'b';
+        #endif
+        break;
+        case 0xC:
+        out0 = &(machine->addrspace[machine->regZ]);
+        #ifdef DEBUG
+        reg0 = 'z';
+        #endif
+        break;
+        case 0xD:
+        out0 = &(machine->addrspace[machine->regH]);
+        #ifdef DEBUG
+        reg0 = 'a';
+        #endif
+        break;
+        case 0xE:
+        out0 = &(machine->addrspace[machine->fixed0]);
+        #ifdef DEBUG
+        reg0 = 'n';
+        #endif
+        break;
+        case 0xF:
+        out0 = &(machine->addrspace[machine->regC]);
+        #ifdef DEBUG
+        reg0 = 'c';
+        #endif
 
 
     }
@@ -488,6 +559,42 @@ bool run(virtualmachine* machine){
         out1 = &(machine->regC);
         #ifdef DEBUG
         reg1 = 'C';
+        #endif
+        break;
+        case 0xA:
+        out1 = &(machine->addrspace[machine->regA]);
+        #ifdef DEBUG
+        reg1 = 'a';
+        #endif
+        break;
+        case 0xB:
+        out1 = &(machine->addrspace[machine->regB]);
+        #ifdef DEBUG
+        reg1 = 'b';
+        #endif
+        break;
+        case 0xC:
+        out1 = &(machine->addrspace[machine->regZ]);
+        #ifdef DEBUG
+        reg1 = 'z';
+        #endif
+        break;
+        case 0xD:
+        out1 = &(machine->addrspace[machine->regH]);
+        #ifdef DEBUG
+        reg1 = 'a';
+        #endif
+        break;
+        case 0xE:
+        out1 = &(machine->addrspace[machine->fixed1]);
+        #ifdef DEBUG
+        reg1 = 'n';
+        #endif
+        break;
+        case 0xF:
+        out1 = &(machine->addrspace[machine->regC]);
+        #ifdef DEBUG
+        reg1 = 'c';
         #endif
         break;
 
