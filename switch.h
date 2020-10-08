@@ -86,4 +86,10 @@ switch(str2int(cmd.c_str())){
     case str2intc("RET"):
     data[0] = 0x1C;
     break;
+    case str2intc("CON"):
+    data[0] = 0x1D;
+    break;
+    case str2intc("DCN"):
+    data[0] = 0x1E;
+    break;
 }

@@ -732,15 +732,24 @@ bool run(virtualmachine* machine){
             *out1 = data1;
         break;
 
-        case 0x000C: //INP: get one character from user and write to the second
-            scanf("%c", &data1);
-            //data1 = scanf();
+        case 0x000C: //INP: get a value
+
+            if(data0 == 0)
+                scanf("%c", &data1);
+            else{
+                data1 = machine->devices[data0]->out();
+            }
             *out1 = data1;
         break;
 
-        case 0x000D: //OUT: send two characters to the user
-            printf("%c", data0);
-            printf("%c", data1);
+        case 0x000D: //OUT: send a value
+
+            if(data0 == 0)
+                printf("%c", data1);
+            else{
+                machine->devices[data0]->in(data1);
+            }
+
         break;
 
         case 0x000E: //RSH: binary right shift second value by first value and write to the second
@@ -815,6 +824,17 @@ bool run(virtualmachine* machine){
             machine->sp++;
             machine->pc = machine->addrspace[0xFF00 + machine->sp];
             inc = false;
+        break;
+        case 0x001D: //CON
+            switch(data1){
+                case 2:
+                machine->devices[data0] = (device*)malloc(sizeof(externalram));
+                break;
+            }
+        break;
+        case 0x001E: //DCN
+            free(machine->devices[data0]);
+            machine->devices[data0] = (device*)0;
         break;
         
     }
