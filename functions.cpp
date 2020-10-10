@@ -828,7 +828,9 @@ bool run(virtualmachine* machine){
         case 0x001D: //CON
             switch(data1){
                 case 2:
-                machine->devices[data0] = (device*)malloc(sizeof(externalram));
+                //machine->devices[data0] = (device*)malloc(sizeof(externalram));
+                machine->devices[data0] = (device*)new externalram;
+                machine->devices[data0]->init(machine);
                 break;
             }
         break;

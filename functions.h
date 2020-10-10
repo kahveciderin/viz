@@ -1,3 +1,4 @@
+#define DEBUG
 #include <cmath>
 #include <iostream>
 #include <fstream>

@@ -1,108 +1,16 @@
-
-class device{
-    uint16_t databuffer[256];
-    uint8_t datap;
-    virtual uint16_t run(uint16_t buff[]){}
-    uint16_t outbuff;
-    public: void in(uint16_t data){
-        if(data == 0){
-        datap=0;
-        outbuff = run(databuffer);
-        }
-        else{
-        databuffer[datap] = data;
-        }
-
-        printf("%d", outbuff);
-    }
-    public: uint16_t out(){
-        return outbuff;
-    }
-};
-
-class externalram:device{
-    uint16_t *addrspace;
-    uint16_t run(uint16_t buff[]) override{
-    switch(buff[0]){
-
-        case 0x1:
-        return addrspace[buff[1]];
-        break;
-
-        case 0xF:
-        addrspace[buff[1]]=buff[2];
-        break;
-    }
-    return 0;
-    }
-};
-
-
-
-class networkcard:device{
-    
-    char address[4];
-    uint16_t port;
-    __socket_type protocol;
-    char data[256];
-    int socket_f;
-    //struct sockaddr_in addr; 
-    uint16_t run(uint16_t buff[]) override{
-
-
-        switch(buff[0]){
-            case 0x0001: //TCP socket
-            protocol = SOCK_STREAM;
-            address[0] = (buff[1] & 0xFF00) >> 8;
-            address[1] = buff[1] & 0xFF;
-            address[2] = (buff[2] & 0xFF00) >> 8;
-            address[3] = buff[2] & 0xFF;
-            port = buff[3];
-            //addr.sin_family = AF_INET; 
-	        //addr.sin_addr.s_addr = 0; 
-	        //addr.sin_port = htons( port ); 
-	
-            //bind(socket_f, (struct sockaddr *)&addr, sizeof(addr))
-            //return (socket_f = socket(AF_INET, protocol, 0));
-            
-            break;
-            case 0x0002: //UDP socket
-            protocol = SOCK_DGRAM;
-            address[0] = (buff[1] & 0xFF00) >> 8;
-            address[1] = buff[1] & 0xFF;
-            address[2] = (buff[2] & 0xFF00) >> 8;
-            address[3] = buff[2] & 0xFF;
-            port = buff[3];
-            return (socket_f = socket(AF_INET, protocol, 0));
-            break;
-            case 0x0003:
-
-            break;
-
-        }
-        
-
-        
-        return 0;
-    }
-};
-
-class gpu:device{
-   
-};
-
+class device;
 struct virtualmachine{
 
-    uint16_t pc;
-    uint16_t regA;
-    uint16_t regB;
-    uint16_t regC;
-    uint16_t regX;
-    uint16_t regY;
-    uint16_t regZ;
-    uint16_t regF;
-    uint16_t regH;
-    uint8_t sp;
+    uint16_t pc = 0;
+    uint16_t regA = 0;
+    uint16_t regB = 0;
+    uint16_t regC = 0;
+    uint16_t regX = 0;
+    uint16_t regY = 0;
+    uint16_t regZ = 0;
+    uint16_t regF = 0;
+    uint16_t regH = 0;
+    uint8_t sp = 0xFF;
     uint16_t *addrspace;
     uint16_t tmpstack;
     bool push;
@@ -114,6 +22,82 @@ struct virtualmachine{
 
 
 };
+
+
+class device{
+    public: uint16_t databuffer[256];
+    uint8_t datap;
+    virtual uint16_t run(){ return 0; }
+    virtual ~device() { }
+    //virtual ~device() = 0;
+    uint16_t outbuff;
+    public: virtualmachine* machine;
+    void init(virtualmachine * mach){
+        machine = mach;
+    }
+    public: void in(uint16_t data){
+        if(data == 0 && datap > 2){
+        datap=0;
+        #ifdef DEBUG
+        printf("%04X %04X %04X %04X\n", databuffer[0], databuffer[1], databuffer[2], databuffer[3]);
+        #endif
+        outbuff = run();
+        }
+        else{
+        databuffer[datap] = data;
+        #ifdef DEBUG
+        printf("Added %04X to %d", databuffer[datap], datap);
+        #endif
+        datap++;
+        }
+
+        //printf("%d", outbuff);
+    }
+    public: uint16_t out(){
+        return outbuff;
+    }
+};
+
+class externalram:device{
+    uint16_t *addrspace = new uint16_t[65535];
+    uint16_t run() override{
+    uint8_t z = 0;
+    char *pathbuff = (char*)malloc(sizeof(char) * 256);
+    switch(databuffer[0]){
+
+        case 0x1:
+        #ifdef DEBUG
+        printf("read %04X\n", databuffer[1]);
+        #endif
+        return addrspace[databuffer[1]];
+        break;
+        case 0x4F:
+        #ifdef DEBUG
+        printf("file read to %04X pointer %04X\n", databuffer[1], databuffer[2]);
+        #endif
+        z = 0;
+        while(machine->addrspace[databuffer[2] + z] != 0){
+            pathbuff[z] = machine->addrspace[databuffer[2] + z];
+            z++;
+        }
+
+        #ifdef DEBUG
+        printf("File location: %s\n", pathbuff);
+        #endif
+        break;
+        case 0xF:
+        #ifdef DEBUG
+        printf("write %04X to %04X\n", databuffer[1], databuffer[2]);
+        #endif
+        addrspace[databuffer[1]]=databuffer[2];
+        break;
+    }
+    return 0;
+    }
+    ~externalram() {}
+};
+
+
 
 
 struct label{

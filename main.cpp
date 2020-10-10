@@ -7,7 +7,6 @@ int main(int argc, char* argv[]){
     srand (time(NULL));
     string data;
     virtualmachine machinestate;
-    machinestate.sp = 0xFF;
     ifstream file(argv[1]);
     
     string line ;
