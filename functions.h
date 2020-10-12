@@ -1,4 +1,5 @@
-#define DEBUG
+//#define DEBUG
+//#define LITTLE
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -12,7 +13,5 @@
 using namespace std;
 #include <stdio.h>
 #include <ctype.h>
-
-//#include <ncurses.h>
 #include "definitions.h"
 #include "functions.cpp"

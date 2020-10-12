@@ -63,6 +63,8 @@ class externalram:device{
     uint16_t run() override{
     uint8_t z = 0;
     char *pathbuff = (char*)malloc(sizeof(char) * 256);
+    FILE *fileptr;
+    uint16_t g;
     switch(databuffer[0]){
 
         case 0x1:
@@ -74,12 +76,67 @@ class externalram:device{
         case 0x4F:
         #ifdef DEBUG
         printf("file read to %04X pointer %04X\n", databuffer[1], databuffer[2]);
+        
         #endif
         z = 0;
         while(machine->addrspace[databuffer[2] + z] != 0){
             pathbuff[z] = machine->addrspace[databuffer[2] + z];
             z++;
         }
+        fileptr = fopen(pathbuff,"rb");
+        
+        while(1){
+        char c = fgetc(fileptr);
+        if(c == EOF)
+        break;
+        #ifdef LITTLE
+        if(g % 2 == 0){
+            addrspace[databuffer[1] + (int)floor(g/2)] = c;
+        }else{
+            addrspace[databuffer[1] + (int)floor(g/2)] += c << 8;
+        }
+        #else
+        if(g % 2 == 0){
+            addrspace[databuffer[1] + (int)floor(g/2)] = c << 8;
+        }else{
+            addrspace[databuffer[1] + (int)floor(g/2)] += c;
+        }
+        #endif
+
+        
+        
+        g++;
+        }
+
+        #ifdef DEBUG
+        printf("File location: %s\n", pathbuff);
+        #endif
+        break;
+        case 0x41:
+        #ifdef DEBUG
+        printf("file write to %04X pointer %04X\n", databuffer[1], databuffer[2]);
+        
+        #endif
+        z = 0;
+        while(machine->addrspace[databuffer[2] + z] != 0){
+            pathbuff[z] = machine->addrspace[databuffer[2] + z];
+            z++;
+        }
+        fileptr = fopen(pathbuff,"wb");
+        
+
+        #ifdef LITTLE
+        for(int j = 0; j < 65535; j+=2){
+            fputc((addrspace[j] & 0xFF), fileptr);
+            fputc((addrspace[j] & 0xFF00) >> 8, fileptr);
+        }
+        #else
+        for(int j = 0; j < 65535; j++){
+
+            fputc((addrspace[j] & 0xFF00) >> 8, fileptr);
+            fputc(addrspace[j] & 0xFF, fileptr);
+        }
+        #endif
 
         #ifdef DEBUG
         printf("File location: %s\n", pathbuff);

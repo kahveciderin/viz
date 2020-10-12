@@ -1,9 +1,14 @@
-CON#NN 0002 0002 ;connect external ram to port 2
-OUT#NN 0002 004F ;set external ram to FILE WRITE
-OUT#NN 0002 0001 ;select address 0x0000
-OUT#NN 0002 .file ;write data pointer .file
-OUT#NN 0002 0000 ;send and flush
-HLT#NN 0000 0000 ;halt
+MOV#NA .txt .
+CAL#NN . .print
+HLT#NN . .
 
-:file
-$/home/derin/Desktop/dataextractor
+:print
+OUT#Na . .
+ADD#AN . 0001
+JOZ#AN . .end
+JMP#NN . .print
+:end
+RET#NN . .
+
+:txt
+$Hello, world!
