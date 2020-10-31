@@ -249,8 +249,12 @@ uint16_t* compile(string code){
             g-=4;
         }
 
-
-        if(line[0] != '#' && line[0] != ':'){
+        #ifdef VIZ4WEB
+        if(line[0] != '#' && line[0] != ':' && line[0] != '+'){
+        #else
+        if(line[0] != '#' && line[0] != ':' ){
+        #endif
+        
             g+=4;
 
         }
@@ -343,7 +347,13 @@ uint16_t* compile(string code){
             data[g] = 0;
             g++;
         }
-        else if(line[0] != '#' && line[0] != ':'){
+
+        #ifdef VIZ4WEB
+        else if(line[0] != '#' && line[0] != ':' && line[0] != '+'){
+        #else
+        else if(line[0] != '#' && line[0] != ':' ){
+        #endif
+        //else if(line[0] != '#' && line[0] != ':'){
         //printf("*\n");
 
         //printf("Line: %s\n\n", line.c_str());

@@ -1,14 +1,63 @@
-MOV#NA .txt .
-CAL#NN . .print
-HLT#NN . .
-
-:print
+ADD#aN . 0001
+:label0
+SUB#aN . 0001
+:label1
+SUB#AN . 0001
+SUB#AN . 0001
+:label2
+ADD#aN . 0001
+:label3
+SUB#aN . 0001
+SUB#aN . 0001
+SUB#aN . 0001
+ADD#AN . 0001
+JNZ#aN . .label3
+SUB#aN . 0001
+:label4
+SUB#AN . 0001
+SUB#AN . 0001
+SUB#AN . 0001
+JNZ#aN . .label4
+JNZ#aN . .label2
+JNZ#aN . .label1
+ADD#AN . 0001
+ADD#AN . 0001
+ADD#AN . 0001
+SUB#aN . 0001
+JNZ#aN . .label0
+ADD#AN . 0001
+SUB#aN . 0001
+OUT#Na . .
+SUB#aN . 0001
+SUB#aN . 0001
+SUB#aN . 0001
 OUT#Na . .
 ADD#AN . 0001
-JOZ#AN . .end
-JMP#NN . .print
-:end
-RET#NN . .
-
-:txt
-$Hello, world!
+OUT#Na . .
+OUT#Na . .
+ADD#AN . 0001
+OUT#Na . .
+SUB#AN . 0001
+SUB#AN . 0001
+SUB#AN . 0001
+SUB#AN . 0001
+SUB#aN . 0001
+OUT#Na . .
+SUB#AN . 0001
+ADD#aN . 0001
+OUT#Na . .
+ADD#AN . 0001
+ADD#AN . 0001
+ADD#AN . 0001
+ADD#AN . 0001
+ADD#AN . 0001
+OUT#Na . .
+ADD#AN . 0001
+OUT#Na . .
+SUB#AN . 0001
+SUB#AN . 0001
+OUT#Na . .
+SUB#AN . 0001
+SUB#aN . 0001
+OUT#Na . .
+#EOF

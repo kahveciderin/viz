@@ -1,9 +1,13 @@
 //#define DEBUG
 //#define LITTLE
+//#define VIZ4WEB
+
+
 #include <cmath>
 #include <iostream>
 #include <fstream>
-#include <sys/socket.h>
+//include <sys/socket.h>
+#include <time.h>
 #include <unistd.h>
 #include <stdint.h>
 #include "devices.h"
