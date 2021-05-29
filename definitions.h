@@ -16,9 +16,10 @@
   with this program; if not, write to the Free Software Foundation, Inc.,
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-
+#pragma once
 #define TERMINATOR '\n'
 
 #ifdef DEBUG
-string commands[] = {"NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX", "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH", "SET", "GET", "JOZ", "RND", "MOV", "PSH", "POP", "MOD", "HLT", "JNZ", "POW", "CAL", "RET", "CON", "DCN"};
+#include <string>
+inline const std::string commands[] = {"NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX", "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH", "SET", "GET", "JOZ", "RND", "MOV", "PSH", "POP", "MOD", "HLT", "JNZ", "POW", "CAL", "RET", "CON", "DCN"};
 #endif
