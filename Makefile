@@ -4,11 +4,11 @@ FILES=$(wildcard *.cpp)
 OBJS=$(patsubst %.cpp, %.o, $(FILES))
 BUILDNAME:=vrk
 
-ifeq ($(BUILDTYPE),DEBUG):
+ifeq ($(BUILDTYPE),DEBUG)
 	FLAGS+=-DDEBUG
 	BUILDNAME=vizier
 endif
-ifeq ($(BUILDTYPE),WEB):
+ifeq ($(BUILDTYPE),WEB)
 	FLAGS+=-DVIZ4WEB
 	BUILDNAME=viz4web
 endif
