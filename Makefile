@@ -15,7 +15,7 @@ endif
 
 
 build: $(OBJS) buildcommon
-	$(CC) $(OBJS) $(wildcard common/*.o) $(FLAGS) -o $(BUILDNAME)
+	$(CC) $(OBJS) $(wildcard common/*.o) $(FLAGS) -o build/$(BUILDNAME)
 	$(MAKE) partclean
 %.o: %.cpp
 	$(CC) $< $(FLAGS) -c -o $@
@@ -25,4 +25,4 @@ partclean:
 	rm -f *.o
 	$(MAKE) -C modules clean
 clean: partclean
-	rm -f vrk vizier viz4web
+	rm -f build/*
