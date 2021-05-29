@@ -17,6 +17,8 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
 #include <definitions.h>
 #include <datatypes.h>
 
@@ -28,11 +30,14 @@
 
 using namespace std;
 
-unsigned int str2int(const char* str, int h);
-constexpr unsigned int str2intc(const char* str, int h);
+unsigned int str2int(const char* str, int h = 0);
+constexpr unsigned int str2intc(const char* str, int h = 0){
+  return !str[h] ? 5381 : (str2intc(str, h + 1) * 33) ^ str[h];
+}
 
 uint16_t* convert(string line);
 uint16_t* compile(string code);
 
 bool run(virtualmachine* machine);
 bool check(virtualmachine* machine);
+#endif

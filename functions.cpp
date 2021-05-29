@@ -20,6 +20,7 @@
 #include <definitions.h>
 #include <datatypes.h>
 #include <functions.h>
+#include <switch.h>
 
 #include <math.h>
 #include <ctype.h>
@@ -29,12 +30,8 @@
 
 using namespace std;
 
-unsigned int str2int(const char* str, int h = 0) {
+unsigned int str2int(const char* str, int h) {
   return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
-}
-
-constexpr unsigned int str2intc(const char* str, int h = 0) {
-  return !str[h] ? 5381 : (str2intc(str, h + 1) * 33) ^ str[h];
 }
 
 uint16_t* convert(string line) {
@@ -83,17 +80,17 @@ uint16_t* convert(string line) {
      * 
      */
 
-#include "switch.h"
+  0 [data] = opcode_to_code(cmd);
 
   switch (line[3]) {
     case '#':
-      data[1] = 0x00;
+      1 [data] = 0x00;
       break;
     case '$':
-      data[1] = 0x01;
+      1 [data] = 0x01;
       break;
     case '&':
-      data[1] = 0x02;
+      1 [data] = 0x02;
       break;
     case '!':
       data[1] = 0x03;
@@ -290,36 +287,19 @@ uint16_t* compile(string code) {
     string dot = ".";
     fromf = dot.append(fromf);
     char val[32];
-    //printf("%s\n", fromf.c_str());
-    /*sprintf(val, "%X", tmpdbg);
-        if(tmpdbg & 0x000F)
-        sprintf(val, "000%X", tmpdbg);
-        if(tmpdbg & 0x00F0)
-        sprintf(val, "00%X", tmpdbg);
-        if(tmpdbg & 0x0F00)
-        sprintf(val, "0%X", tmpdbg);
-        if(tmpdbg == 0)
-        sprintf(val, "0000");
-        */
 
     sprintf(val, "%04X", tmpdbg);
 
     string tof(val);
-    //printf("Label: %s %x (%s)\n", fromf.c_str(), labels[v].addr, tof.c_str());
     int index;
     while ((index = code.find(fromf + " ")) != string::npos) {
-      //code.erase(index, tof.length());
       code.replace(index, fromf.length(), tof);  //remove and replace from that position
     }
     index = 0;
     while ((index = code.find(fromf + "\n")) != string::npos) {
-      //code.erase(index, tof.length());
       code.replace(index, fromf.length(), tof);  //remove and replace from that position
     }
-
-    //printf("*\n");
   }
-  //printf("%s\n", code.c_str());
 
   for (int i = 0; i < code.length(); i++) {
     string line;
@@ -341,7 +321,6 @@ uint16_t* compile(string code) {
     } else if (line[0] == '$') {
       for (int f = 1; f <= strlen(line.c_str()) - 1; f++) {
         data[g] = line[f];
-        //printf("%c\n", data[g]);
         g++;
       }
 
@@ -353,10 +332,6 @@ uint16_t* compile(string code) {
 #else
     else if (line[0] != '#' && line[0] != ':') {
 #endif
-      //else if(line[0] != '#' && line[0] != ':'){
-      //printf("*\n");
-
-      //printf("Line: %s\n\n", line.c_str());
 
 #ifdef DEBUG
       printf("%s\n", line.c_str());
