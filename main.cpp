@@ -17,14 +17,15 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <definitions.h>
-#include <functions.h>
-
-#include <stdint.h>
+#include "functions.h"
+#include "definitions.h"
+#include <cstdint>
 #include <fstream>
-
+#include <string>
+#ifdef VIZ4WEB
+#include <regex.h>
+#endif
 using namespace std;
-
 int main(int argc, char* argv[]) {
   srand(time(NULL));
   string data;
@@ -32,7 +33,6 @@ int main(int argc, char* argv[]) {
   ifstream file(argv[1]);
 
 #ifdef VIZ4WEB
-#include <regex.h>
   regex_t regex;
   int reti;
   reti = regcomp(&regex, "(?<=^>>).*", REG_EXTENDED);

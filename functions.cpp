@@ -17,10 +17,10 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <definitions.h>
-#include <datatypes.h>
-#include <functions.h>
-#include <switch.h>
+#include "definitions.h"
+#include "datatypes.h"
+#include "functions.h"
+#include "switch.h"
 
 #include <math.h>
 #include <ctype.h>

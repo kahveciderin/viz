@@ -16,19 +16,10 @@
   with this program; if not, write to the Free Software Foundation, Inc.,
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
-#include <math.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <string.h>
-#include <string>
-
-using namespace std;
-
+#pragma once
 #define TERMINATOR '\n'
 
 #ifdef DEBUG
-string commands[] = {"NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX", "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH", "SET", "GET", "JOZ", "RND", "MOV", "PSH", "POP", "MOD", "HLT", "JNZ", "POW", "CAL", "RET", "CON", "DCN"};
-#endif
+#include <string>
+inline const std::string commands[] = {"NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX", "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH", "SET", "GET", "JOZ", "RND", "MOV", "PSH", "POP", "MOD", "HLT", "JNZ", "POW", "CAL", "RET", "CON", "DCN"};
 #endif

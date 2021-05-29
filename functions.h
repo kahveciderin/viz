@@ -17,10 +17,8 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
-#include <definitions.h>
-#include <datatypes.h>
+#include "definitions.h"
+#include "datatypes.h"
 
 #include <math.h>
 #include <ctype.h>
@@ -40,4 +38,3 @@ uint16_t* compile(string code);
 
 bool run(virtualmachine* machine);
 bool check(virtualmachine* machine);
-#endif

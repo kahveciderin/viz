@@ -17,8 +17,8 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <definitions.h>
-#include <datatypes.h>
+#include "definitions.h"
+#include "datatypes.h"
 
 #include <stdint.h>
 
