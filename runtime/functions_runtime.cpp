@@ -1,5 +1,6 @@
 #include "datatypes.h"
 
+#include <ios>
 #include <iostream>
 #include <cmath>
 bool run(virtualmachine *machine) {
@@ -301,6 +302,11 @@ bool run(virtualmachine *machine) {
     break;
 
   case 0x0004: // DIV: divide values and write to the second
+    if (data1 == 0) {
+      std::cerr << "Division by zero at pc:" << std::hex << machine->pc << std::dec << "\n";
+      machine->halt = true;
+      break;
+    }
     data0 /= data1;
     *out0 = data0;
     break;
