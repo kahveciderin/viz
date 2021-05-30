@@ -1,5 +1,6 @@
 #include "../datatypes.hpp"
 #include "console.h"
+#include <iostream>
 
 using namespace device_type;
 
