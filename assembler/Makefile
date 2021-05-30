@@ -3,6 +3,10 @@ FLAGS?=-I.
 FILES=$(wildcard *.cpp)
 OBJS=$(patsubst %.cpp, %.o, $(FILES))
 
+ifeq ($(PARAMS),DBG)
+	FLAGS+=-g -O0 -Wall -Wextra
+endif
+
 %.o: %.cpp
 	$(CC) $< $(FLAGS) -c -o $@
 vsm: $(OBJS)
