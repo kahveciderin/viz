@@ -1,5 +1,5 @@
-#include "definitions.h"
-#include "switch.h"
+#include "definitions.hpp"
+#include "switch.hpp"
 #include <string>
 #include <cstring>
 unsigned int str2int(const char *str, int h) {
