@@ -1,15 +1,18 @@
 #include "datatypes.hpp"
 
+#include "modules_enable.h"
 #include <bits/stdint-uintn.h>
 #include <cmath>
 #include <ios>
 #include <iostream>
 #include <random>
+
 #ifdef DEBUG
 #include <iomanip>
 const std::array<char, 16> regnames = {'A', 'B', 'X', 'Y', 'Z', 'F', 'H', 'I', 'N', 'C', 'a', 'b', 'c', 'h', 'n', 'z'};
 const std::array<char, 5> addrmodenames = {'#', '$', '&', '!', '?'};
 #endif
+
 bool run(virtualmachine *machine) {
   std::random_device randev;
   std::mt19937 rng(randev());
@@ -176,7 +179,8 @@ bool run(virtualmachine *machine) {
 
   case 0x0004: // DIV: divide values and write to the second
     if (data1 == 0) {
-      std::cerr << "Division by zero at pc:" << std::hex << machine->pc << std::dec << "\n";
+      std::cerr << "Division by zero at pc:" << std::hex << machine->pc
+                << std::dec << "\n";
       machine->halt = true;
       break;
     }
@@ -323,9 +327,10 @@ bool run(virtualmachine *machine) {
   case 0x001D: // CON
     /*
     switch (data1) {
-      // device connections here
-      default:
-        break;
+    case 0:
+      machine->devices[data0] = (device *)new device_type::console;
+      machine->devices[data0]->init(machine);
+      break;
     }
     */
     break;
