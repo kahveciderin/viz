@@ -195,7 +195,7 @@ uint16_t *convert(std::string line) {
     return data;
 }
 uint16_t *compile(std::string code, uint16_t *data_size) {
-    static uint16_t *data = new uint16_t[0x10000];
+    static uint16_t *data = (uint16_t*)malloc(0);
     uint16_t g = 0;
 
     label labels[0x10000];
@@ -292,11 +292,11 @@ uint16_t *compile(std::string code, uint16_t *data_size) {
         }
         } else if (line[0] == '$') {
         for (int f = 1; f <= strlen(line.c_str()) - 1; f++) {
-            // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
+            data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
             data[g] = line[f];
             g++;
         }
-        // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
+        data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
         data[g] = 0;
         g++;
         }
@@ -312,7 +312,8 @@ uint16_t *compile(std::string code, uint16_t *data_size) {
 
         
         uint16_t *compiled = convert(line);
-        // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 4));
+        if(compiled[0] == 0 && compiled[1] == 0 && compiled[2] == 0 && compiled[3] == 0) continue;
+        data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 4));
         data[g] = compiled[0];
         g++;
         data[g] = compiled[1];
