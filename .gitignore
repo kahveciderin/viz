@@ -35,6 +35,8 @@
 *.s
 *.vz
 *.v
+*.vsm
+*.viz
 
 # log files
 *.log
