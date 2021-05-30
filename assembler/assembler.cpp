@@ -30,14 +30,14 @@ int main(int argc, char *argv[]) {
     std::string infile;
     std::string outfile;
     if (argc < 2) {    
-        std::cout << "Enter input file name:";
+        std::cout << "Enter input file name: ";
         std::cin >> infile;
     } else {
         infile = argv[1];
     }
     std::ifstream file(infile);
     if (argc < 3) {
-        std::cout << "Enter output file name:";
+        std::cout << "Enter output file name: ";
         std::cin >> outfile;
     } else {
         outfile = argv[2];

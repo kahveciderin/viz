@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   virtualmachine machinestate;
   std::string infile;
   if (argc < 2) {
-      std::cout << "Enter input file name:";
+      std::cout << "Enter input file name: ";
       std::cin >> infile;
   } else {
     infile = argv[1];
