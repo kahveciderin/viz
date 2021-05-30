@@ -33,7 +33,6 @@
 
 # VIZ assembly files
 *.s
-*.viz
 *.vz
 *.v
 *.vsm
