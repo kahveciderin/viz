@@ -44,3 +44,8 @@ build/*
 .*/
 
 compile_commands.json
+
+assembler/vsm
+assembler/vsm4web
+runtime/vizier
+runtime/vrk
