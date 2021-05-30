@@ -238,7 +238,7 @@ std::vector<uint16_t> compile(std::string code, uint16_t *data_size) {
         if(compiled[0] == 0 && compiled[1] == 0 && compiled[2] == 0 && compiled[3] == 0) { 
             continue;
         }
-
+        data.resize(g+4);
         data[g] = compiled[0];
         g++;
         data[g] = compiled[1];
