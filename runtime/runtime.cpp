@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
   int reti;
   reti = regcomp(&regex, "(?<=^>>).*", REG_EXTENDED);
 #endif
-  uint16_t a[0x10000];
-  file.read((char *)a, sizeof(a));
+  uint16_t memcontents[0x10000];
+  file.read((char *)memcontents, sizeof(memcontents));
   machinestate.push = false;
   machinestate.halt = false;
   machinestate.addrspace = a;
