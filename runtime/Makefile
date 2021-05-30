@@ -10,10 +10,8 @@ endif
 %.o: %.cpp
 	$(CC) $< $(FLAGS) -c -o $@
 vrk: $(OBJS)
-	$(CC) $(OBJS) $(FLAGS) -o $@
-vizier:
-	$(MAKE) vrk FLAGS="$(FLAGS) -DDEBUG"
-	mv vrk vizier
+	$(CC) $(OBJS) $(FLAGS) -o ../build/$@
+vizier: $(OBJS)
+	$(CC) $(OBJS) $(FLAGS) -o ../build/$@
 clean:
 	rm *.o
-	rm vrk vizier

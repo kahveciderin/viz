@@ -6,10 +6,8 @@ OBJS=$(patsubst %.cpp, %.o, $(FILES))
 %.o: %.cpp
 	$(CC) $< $(FLAGS) -c -o $@
 vsm: $(OBJS)
-	$(CC) $(OBJS) $(FLAGS) -o $@
+	$(CC) $(OBJS) $(FLAGS) -o ../build/$@
 vsm4web:
-	$(MAKE) vsm FLAGS="$(FLAGS) -DVIZ4WEB"
-	mv vsm vsm4web
+	$(CC) $(OBJS) $(FLAGS) -o ../build/$@
 clean:
 	rm *.o
-	rm vsm vsm4web
