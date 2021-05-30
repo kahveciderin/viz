@@ -13,7 +13,6 @@
         "-DRUNTIME",
         "-DASSEMBLER"
     ],
-    "clang-tidy.fixOnSave": true,
     "clang-tidy.buildPath": "build",
     "clang-tidy.checks": [
 
