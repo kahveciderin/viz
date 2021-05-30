@@ -17,15 +17,16 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 #include "functions_assembler.hpp"
+#include <bits/stdint-uintn.h>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 #ifdef VIZ4WEB
 #include <regex.h>
 #endif
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
     std::string data;
     std::string infile;
     std::string outfile;
@@ -50,16 +51,17 @@ int main(int argc, char *argv[]) {
     while (getline(file, line)) {
 #ifdef VIZ4WEB
         regex_t regex;
-        int reti;
-        reti = regcomp(&regex, "(?<=^>>).*", REG_EXTENDED);
-        reti = regexec(&regex, "abc", 0, NULL, 0);
-        if (!reti) {
-            char *code = new char[128];
-            sprintf(code, "%.*s", (int)line.length() - 2, line.c_str() + 2);
-
+        int reti = regcomp(&regex, "(?<=^>>).*", REG_EXTENDED);
+        if (reti != 0) {
+            std::cerr << "regcomp() error code " << reti << "\n";
+            return reti;
+        }
+        reti = regexec(&regex, "abc", 0, nullptr, 0);
+        if (reti == 0) {
+            std::string code = line;
+            code.erase(0, 2);
             data += code;
             data += "\n";
-            delete[] code;
         } else if (reti == REG_NOMATCH) {
             data += "+";
             data += line;
@@ -70,14 +72,17 @@ int main(int argc, char *argv[]) {
         data += "\n";
 #endif
     }
-    uint16_t datasize;
-    uint16_t *a = compile(data + "\n", &datasize);
-    char *fbuff = new char[datasize * 2];
+    uint16_t datasize = 0;
+    std::vector<uint16_t> a = compile(data + "\n", &datasize);
+    std::vector<char> fbuff;
+    fbuff.resize(datasize*2);
     std::ofstream output_file(outfile);
     for (uint32_t i = 0; i < datasize; i++) {
         fbuff[2 * i] = a[i] >> 8;
         fbuff[1 + (2 * i)] = a[i] & 0xFF;
     }
-    output_file.write(fbuff, datasize * 2);
+    for (const auto i : fbuff) {
+        output_file << i;
+    }
     return 0;
 }

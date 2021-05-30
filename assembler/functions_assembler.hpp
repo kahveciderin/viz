@@ -19,11 +19,9 @@
 
 #pragma once
 #include "definitions.hpp"
+#include <array>
+#include <bits/stdint-uintn.h>
 #include <string>
-unsigned int str2int(const char* str, int h = 0);
-constexpr unsigned int str2intc(const char* str, int h = 0){
-  return !str[h] ? 5381 : (str2intc(str, h + 1) * 33) ^ str[h];
-}
-
-uint16_t* convert(std::string line);
-uint16_t* compile(std::string code, uint16_t* data_size);
+#include <vector>
+std::array<uint16_t, 4> convert(std::string line);
+std::vector<uint16_t> compile(std::string code, uint16_t* data_size);

@@ -19,8 +19,11 @@
 
 #include "datatypes.hpp"
 
-#include <stdint.h>
-
+#include <cstdint>
+#ifdef DEBUG
+#include <iomanip>
+#include <iostream>
+#endif
 void device::init(virtualmachine *mach) {
   machine = mach;
 }
@@ -29,13 +32,17 @@ void device::in(uint16_t data) {
   if (data == 0 && datap > 2) {
     datap = 0;
 #ifdef DEBUG
-    printf("%04X %04X %04X %04X\n", databuffer[0], databuffer[1], databuffer[2], databuffer[3]);
+    std::cout << std::hex << std::setfill('0') << std::setw(4) << databuffer[0] << " "
+    << databuffer[1] << " "
+    << databuffer[2] << " "
+    << databuffer[3] << "\n" << std::dec;
 #endif
     outbuff = run();
   } else {
     databuffer[datap] = data;
 #ifdef DEBUG
-    printf("Added %04X to %d", databuffer[datap], datap);
+    std::cout << std::hex << std::setfill('0') << std::setw(4) << databuffer[datap] << std::dec;
+    std::cout << " to " << datap;
 #endif
     datap++;
   }
@@ -50,9 +57,5 @@ uint16_t device::run() {
 }
 
 void device::terminate() {
-  return;
-}
-
-
-device::~device() {
+  
 }
