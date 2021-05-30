@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-add_subdirectory(assembler)
-add_subdirectory(runtime)
+add_executable(vrk runtime.cpp functions_runtime.cpp datatypes.cpp)
+add_executable(vizier runtime.cpp functions_runtime.cpp datatypes.cpp)
+target_compile_definitions(vizier PUBLIC DEBUG)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

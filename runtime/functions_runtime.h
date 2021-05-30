@@ -17,38 +17,7 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "definitions.h"
+#pragma once
 #include "datatypes.h"
-
-#include <stdint.h>
-
-void device::init(virtualmachine *mach) {
-  machine = mach;
-}
-
-void device::in(uint16_t data) {
-  if (data == 0 && datap > 2) {
-    datap = 0;
-#ifdef DEBUG
-    printf("%04X %04X %04X %04X\n", databuffer[0], databuffer[1], databuffer[2], databuffer[3]);
-#endif
-    outbuff = run();
-  } else {
-    databuffer[datap] = data;
-#ifdef DEBUG
-    printf("Added %04X to %d", databuffer[datap], datap);
-#endif
-    datap++;
-  }
-}
-
-uint16_t device::out() {
-  return outbuff;
-}
-
-uint16_t device::run() {
-  return 0;
-}
-
-device::~device() {
-}
+bool run(virtualmachine* machine);
+bool check(virtualmachine* machine);
