@@ -12,5 +12,20 @@
     "ccls.clang.extraArgs": [
         "-DRUNTIME",
         "-DASSEMBLER"
+    ],
+    "clang-tidy.fixOnSave": true,
+    "clang-tidy.buildPath": "build",
+    "clang-tidy.checks": [
+
+
+    "*",
+    "-modernize-use-trailing-return-type",
+    "-llvm-header-guard",
+    "-fuchsia-default-arguments-calls",
+    "-fuchsia-statically-constructed-objects",
+    "-cppcoreguidelines-pro-bounds-pointer-arithmetic",
+    "-*-magic-numbers",
+    "-cppcoreguidelines-pro-bounds-constant-array-index",
+    "-hicpp-signed-bitwise"
     ]
 }

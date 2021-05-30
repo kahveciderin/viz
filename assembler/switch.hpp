@@ -20,4 +20,4 @@
 
 #pragma once
 #include <string>
-uint16_t opcode_to_code(std::string cmd);
+uint16_t opcode_to_code(const std::string& cmd);

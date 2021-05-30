@@ -20,13 +20,13 @@
 #include <bits/stdint-uintn.h>
 #include <cstdint>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #ifdef VIZ4WEB
 #include <regex.h>
 #endif
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
     std::string data;
     virtualmachine machinestate;
     std::string infile;
@@ -48,35 +48,41 @@ int main(int argc, char *argv[]) {
   #endif
     file.seekg(0, std::ios::end);
     int len = file.tellg();
-    char *mem_8bit = new char[len];
+    
     file.seekg(0, std::ios::beg);
-    file.read(mem_8bit, len);
+    std::ostringstream sstr;
+    sstr << file.rdbuf();
+    std::string mem_8bit = sstr.str();
 
-    uint16_t *memcontents = new uint16_t[0x10000];
-    for(int i = 0; i < 0x10000; i++){
-      if(i < len) memcontents[i] = (mem_8bit[2 * i] << 8) | mem_8bit[1 + (2 * i)];
-      else memcontents[i] = 0;
+    for(int i = 0; i < 0x10000; i++) {
+      if(i < len) { 
+        machinestate.addrspace[i] = (mem_8bit[2 * i] << 8) | mem_8bit[1 + (2 * i)];
+      } else { 
+        machinestate.addrspace[i] = 0;
+      }
     }
     
     machinestate.push = false;
     machinestate.halt = false;
-    machinestate.addrspace = memcontents;
   #ifdef DEBUG
-    unsigned long tinstrun = 0;
+    uint64_t tinstrun = 0;
   #endif
     while (true) {
       run(&machinestate);
       check(&machinestate);
-      if (machinestate.halt)
+      if (machinestate.halt) { { {
         break;
+}
+}
+}
   #ifdef DEBUG
       tinstrun++;
   #endif
     }
   #ifdef DEBUG
-    printf("\n\nTotal instructions ran: %lu\n", tinstrun);
+    std::cout << std::dec << "\n\nTotal instructions ran: " << tinstrun << "\n";
   #else
-    printf("\n");
+    std::cout << "\n";
   #endif
   return 0;
 }

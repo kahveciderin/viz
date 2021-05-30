@@ -18,8 +18,10 @@
 */
 #pragma once
 #include <bits/stdint-uintn.h>
-#define TERMINATOR '\n'
-typedef struct label {
-  char name[32];
-  uint16_t addr;
-} label;
+#include <string>
+constexpr char TERMINATOR = '\n';
+class label {
+  public:
+  std::string name = "";
+  uint16_t addr=0;
+};

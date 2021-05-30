@@ -19,12 +19,10 @@
 
 #pragma once
 
-#include <stdint.h>
-
-#ifdef DEBUG
-#include <string>
-inline const std::string commands[] = {"NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX", "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH", "SET", "GET", "JOZ", "RND", "MOV", "PSH", "POP", "MOD", "HLT", "JNZ", "POW", "CAL", "RET", "CON", "DCN"};
-#endif
+#include <array>
+#include <bits/stdint-uintn.h>
+#include <cstdint>
+#include <map>
 
 class device;
 class virtualmachine {
@@ -38,34 +36,32 @@ class virtualmachine {
   uint16_t regZ = 0;
   uint16_t regF = 0;
   uint16_t regH = 0;
-  uint8_t sp = 0xFF;
-  uint16_t *addrspace;
-  uint16_t tmpstack;
-  bool push;
-  uint16_t null;
-  uint16_t fixed0;
-  uint16_t fixed1;
-  bool halt;
-  device *devices[1];
+  uint8_t sp = ~static_cast<uint8_t>(0x00);
+  std::array<uint16_t, 0x10000> addrspace=std::array<uint16_t, 0x10000>();
+  uint16_t tmpstack=0;
+  bool push=false;
+  uint16_t null=0;
+  uint16_t fixed0=0;
+  uint16_t fixed1=0;
+  bool halt=false;
+  std::map<uint16_t, device> devices = {};
 };
 
 class device {
- public:
-  uint16_t databuffer[256];
-  uint8_t datap;
+  private:
+  std::array<uint16_t, 256> databuffer=std::array<uint16_t, 256>();
+  uint8_t datap=0;
   virtual uint16_t run();
-  virtual ~device();
-  uint16_t outbuff;
+  uint16_t outbuff=0;
+  virtualmachine *machine=nullptr;
+  public:
 
- public:
-  virtualmachine *machine;
   void init(virtualmachine *mach);
-
- public:
+ 
   virtual void in(uint16_t data);
 
- public:
+ 
   virtual uint16_t out();
 
-  void terminate();
+  static void terminate();
 };
