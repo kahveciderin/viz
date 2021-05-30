@@ -13,7 +13,7 @@ const std::array<char, 5> addrmodenames = {'#', '$', '&', '!', '?'};
 #endif
 bool run(virtualmachine *machine) {
   std::random_device randev;
-  std::mt19937 rng(randev());
+  std::mt19937 rng(randev.entropy());
   uint16_t opcode = machine->addrspace[machine->pc];
 
   // extract instruction data
