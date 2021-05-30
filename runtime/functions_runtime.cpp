@@ -1,4 +1,5 @@
 #include "datatypes.hpp"
+#include "modules_enable.h"
 
 #include <bits/stdint-uintn.h>
 #include <cmath>
@@ -176,7 +177,8 @@ bool run(virtualmachine *machine) {
 
   case 0x0004: // DIV: divide values and write to the second
     if (data1 == 0) {
-      std::cerr << "Division by zero at pc:" << std::hex << machine->pc << std::dec << "\n";
+      std::cerr << "Division by zero at pc:" << std::hex << machine->pc
+                << std::dec << "\n";
       machine->halt = true;
       break;
     }
@@ -323,9 +325,16 @@ bool run(virtualmachine *machine) {
   case 0x001D: // CON
     /*
     switch (data1) {
+<<<<<<< HEAD
       // device connections here
       default:
         break;
+=======
+    case 0:
+      machine->devices[data0] = (device *)new device_type::console;
+      machine->devices[data0]->init(machine);
+      break;
+>>>>>>> 8a775ccf5fd7b1bd143679ce46f8847f2ee580aa
     }
     */
     break;
