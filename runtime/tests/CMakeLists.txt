@@ -6,11 +6,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-add_executable(vrk runtime.cpp functions_runtime.cpp datatypes.cpp)
-add_executable(vizier runtime.cpp functions_runtime.cpp datatypes.cpp)
-target_compile_definitions(vizier PUBLIC DEBUG)
-
-add_subdirectory(tests)
+add_test(NAME helloworld_runtime COMMAND vrk hello.vsm)
+set_tests_properties(helloworld_runtime
+PROPERTIES
+PASS_REGULAR_EXPRESSION "(Hello World!)"
+FAIL_REGULAR_EXPRESSION "(Segmentation Fault|Exception)"
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+TIMEOUT 5
+)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
