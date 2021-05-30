@@ -1,8 +1,6 @@
-#include "functions.h"
-
-using namespace std;
-
-uint16_t opcode_to_code(string cmd) {
+#include <string>
+#include "functions_assembler.h"
+uint16_t opcode_to_code(std::string cmd) {
   uint16_t retval = 0x0;
   switch (str2int(cmd.c_str())) {
     case str2intc("NOP"):

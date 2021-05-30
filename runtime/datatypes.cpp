@@ -17,56 +17,37 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef DATATYPES_H
-#define DATATYPES_H
+#include "datatypes.h"
 
 #include <stdint.h>
 
-class device;
-class virtualmachine {
- public:
-  uint16_t pc = 0;
-  uint16_t regA = 0;
-  uint16_t regB = 0;
-  uint16_t regC = 0;
-  uint16_t regX = 0;
-  uint16_t regY = 0;
-  uint16_t regZ = 0;
-  uint16_t regF = 0;
-  uint16_t regH = 0;
-  uint8_t sp = 0xFF;
-  uint16_t *addrspace;
-  uint16_t tmpstack;
-  bool push;
-  uint16_t null;
-  uint16_t fixed0;
-  uint16_t fixed1;
-  bool halt;
-  device *devices[1];
-};
+void device::init(virtualmachine *mach) {
+  machine = mach;
+}
 
-class device {
- public:
-  uint16_t databuffer[256];
-  uint8_t datap;
-  virtual uint16_t run();
-  virtual ~device();
-  uint16_t outbuff;
-
- public:
-  virtualmachine *machine;
-  void init(virtualmachine *mach);
-
- public:
-  void in(uint16_t data);
-
- public:
-  uint16_t out();
-};
-
-struct label {
-  char name[32];
-  uint16_t addr;
-};
-
+void device::in(uint16_t data) {
+  if (data == 0 && datap > 2) {
+    datap = 0;
+#ifdef DEBUG
+    printf("%04X %04X %04X %04X\n", databuffer[0], databuffer[1], databuffer[2], databuffer[3]);
 #endif
+    outbuff = run();
+  } else {
+    databuffer[datap] = data;
+#ifdef DEBUG
+    printf("Added %04X to %d", databuffer[datap], datap);
+#endif
+    datap++;
+  }
+}
+
+uint16_t device::out() {
+  return outbuff;
+}
+
+uint16_t device::run() {
+  return 0;
+}
+
+device::~device() {
+}

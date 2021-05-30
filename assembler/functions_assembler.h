@@ -18,25 +18,12 @@
 */
 
 #pragma once
-
 #include "definitions.h"
-#include "datatypes.h"
-
-#include <math.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <string.h>
 #include <string>
-
-using namespace std;
-
 unsigned int str2int(const char* str, int h = 0);
 constexpr unsigned int str2intc(const char* str, int h = 0){
   return !str[h] ? 5381 : (str2intc(str, h + 1) * 33) ^ str[h];
 }
 
-uint16_t* convert(string line);
-uint16_t* compile(string code, uint16_t* data_size);
-
-bool run(virtualmachine* machine);
-bool check(virtualmachine* machine);
+uint16_t* convert(std::string line);
+uint16_t* compile(std::string code, uint16_t* data_size);

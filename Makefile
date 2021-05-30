@@ -1,49 +1,20 @@
 CC=g++
-FLAGS=-I.
-FILES=$(wildcard *.cpp)
-OBJS=$(patsubst %.cpp, %.o, $(FILES))
-BUILDNAME:=vrk
+FLAGS?=-I.
 
-
-ifeq ($(BUILDTYPE),RUNTIME)
-	FLAGS+=-DRUNTIME
-	BUILDNAME=vrk
-endif
-ifeq ($(BUILDTYPE),ASSEMBLER)
-	FLAGS+=-DASSEMBLER
-	BUILDNAME=vsm
-endif
-ifeq ($(BUILDTYPE),DEBUG)
-	FLAGS+=-DDEBUG -DRUNTIME
-	BUILDNAME=vizier
-endif
-ifeq ($(BUILDTYPE),DEVKIT)
-	FLAGS+=-DASSEMBLER -DRUNTIME -DBOTH
-	BUILDNAME=vdk
-endif
-ifeq ($(BUILDTYPE),WEB)
-	FLAGS+=-DVIZ4WEB -DASSEMBLER -DRUNTIME
-	BUILDNAME=viz4web
-endif
 ifeq ($(PARAMS),DBG)
 	FLAGS+=-g3 -O0 -Wall -Wextra
 endif
-
-
-build: $(OBJS) buildcommon
-	$(CC) $(OBJS) $(wildcard common/*.o) $(FLAGS) -o build/$(BUILDNAME)
-	$(MAKE) partclean
-suite: clean
-	BUILDTYPE=RUNTIME $(MAKE)
-	BUILDTYPE=DEBUG $(MAKE)
-	BUILDTYPE=DEVKIT $(MAKE)
-	BUILDTYPE=ASSEMBLER $(MAKE)
+all: vizier vrk vsm4web vsm
+vizier:
+	$(MAKE) -C runtime vizier
+vrk:
+	$(MAKE) -C runtime vrk
+vsm:
+	$(MAKE) -C assembler vsm
+vsm4web:
+	$(MAKE) -C assembler vsm4web
 %.o: %.cpp
 	$(CC) $< $(FLAGS) -c -o $@
-buildcommon:
-	$(MAKE) -C modules 
-partclean:
-	rm -f *.o
-	$(MAKE) -C modules clean
-clean: partclean
-	rm -f build/*
+clean:
+	$(MAKE) -C runtime clean
+	$(MAKE) -C assembler clean
