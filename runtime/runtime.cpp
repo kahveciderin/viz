@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   file.read((char *)memcontents, sizeof(memcontents));
   machinestate.push = false;
   machinestate.halt = false;
-  machinestate.addrspace = memcontents;
+  machinestate.addrspace = a;
 #ifdef DEBUG
   unsigned long tinstrun = 0;
 #endif
