@@ -16,7 +16,7 @@
   with this program; if not, write to the Free Software Foundation, Inc.,
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-#include "functions_assembler.h"
+#include "functions_assembler.hpp"
 #include <cstdint>
 #include <fstream>
 #include <iostream>
