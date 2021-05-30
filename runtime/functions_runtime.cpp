@@ -1,8 +1,9 @@
 #include "datatypes.h"
+#include "modules_enable.h"
 
+#include <cmath>
 #include <ios>
 #include <iostream>
-#include <cmath>
 bool run(virtualmachine *machine) {
   uint16_t opcode = machine->addrspace[machine->pc];
 
@@ -303,7 +304,8 @@ bool run(virtualmachine *machine) {
 
   case 0x0004: // DIV: divide values and write to the second
     if (data1 == 0) {
-      std::cerr << "Division by zero at pc:" << std::hex << machine->pc << std::dec << "\n";
+      std::cerr << "Division by zero at pc:" << std::hex << machine->pc
+                << std::dec << "\n";
       machine->halt = true;
       break;
     }
@@ -447,7 +449,10 @@ bool run(virtualmachine *machine) {
     break;
   case 0x001D: // CON
     switch (data1) {
-      // device connections here
+    case 0:
+      machine->devices[data0] = (device *)new device_type::console;
+      machine->devices[data0]->init(machine);
+      break;
     }
     break;
   case 0x001E: // DCN
