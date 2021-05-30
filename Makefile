@@ -17,18 +17,27 @@ ifeq ($(BUILDTYPE),DEBUG)
 	FLAGS+=-DDEBUG -DRUNTIME
 	BUILDNAME=vizier
 endif
+ifeq ($(BUILDTYPE),DEVKIT)
+	FLAGS+=-DASSEMBLER -DRUNTIME -DBOTH
+	BUILDNAME=vdk
+endif
 ifeq ($(BUILDTYPE),WEB)
 	FLAGS+=-DVIZ4WEB -DASSEMBLER -DRUNTIME
 	BUILDNAME=viz4web
 endif
 ifeq ($(PARAMS),DBG)
-	FLAGS+=-g3 -O0
+	FLAGS+=-g3 -O0 -Wall -Wextra
 endif
 
 
 build: $(OBJS) buildcommon
 	$(CC) $(OBJS) $(wildcard common/*.o) $(FLAGS) -o build/$(BUILDNAME)
 	$(MAKE) partclean
+suite: clean
+	BUILDTYPE=RUNTIME $(MAKE)
+	BUILDTYPE=DEBUG $(MAKE)
+	BUILDTYPE=DEVKIT $(MAKE)
+	BUILDTYPE=ASSEMBLER $(MAKE)
 %.o: %.cpp
 	$(CC) $< $(FLAGS) -c -o $@
 buildcommon:

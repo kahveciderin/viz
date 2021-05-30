@@ -65,22 +65,35 @@ int main(int argc, char *argv[]) {
     data += "\n";
 #endif
   }
-  uint16_t *datasize;
-  uint16_t *a = compile(data + "\n", datasize);
-  char *fbuff = new char[*datasize * 2];
+  uint16_t datasize;
+  uint16_t *a = compile(data + "\n", &datasize);
+  // char *fbuff = new char[*datasize * 2];
+  char *fbuff = new char[datasize * 2];
   ofstream output_file(argv[2]);
-  for (uint32_t i = 0; i < *datasize; i++) {
+  for (uint32_t i = 0; i < datasize; i++) {
     fbuff[2 * i] = a[i] >> 8;
     fbuff[1 + (2 * i)] = a[i] & 0xFF;
   }
-  output_file.write(fbuff, *datasize * 2);
+  output_file.write(fbuff, datasize * 2);
 #endif
 
 #ifdef RUNTIME
+  ifstream infile(argv[1]);
+  infile.seekg(0, ios::end);
+  int len = infile.tellg();
+  char *mem_8bit = new char[len];
+  infile.seekg(0, ios::beg);
+  infile.read(mem_8bit, len);
+
+  uint16_t *memcontents = new uint16_t[0x10000];
+  for(int i = 0; i < 0x10000; i++){
+    if(i < len) memcontents[i] = (mem_8bit[2 * i] << 8) | mem_8bit[1 + (2 * i)];
+    else memcontents[i] = 0;
+  }
 
   machinestate.push = false;
   machinestate.halt = false;
-  machinestate.addrspace = a;
+  machinestate.addrspace = memcontents;
 #ifdef DEBUG
   unsigned long tinstrun = 0;
 #endif

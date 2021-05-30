@@ -225,15 +225,15 @@ uint16_t *convert(string line) {
   return data;
 }
 uint16_t *compile(string code, uint16_t *data_size) {
-  static uint16_t *data = new uint16_t[0x10000];
-  uint16_t g = 0;
+  static uint16_t *data = (uint16_t *)malloc(0);
+  static uint16_t g = 0;
 
   label labels[0x10000];
 
   int q = 1;
   memcpy(labels[0].name, "", 0);
   labels[0].addr = 0x0000;
-  for (int i = 0; i < code.length(); i++) {
+  for (int i = 0; i < code.length() - 1; i++) {
     string line;
 
     while (code[i] != TERMINATOR) {
@@ -321,13 +321,16 @@ uint16_t *compile(string code, uint16_t *data_size) {
         g = stoi(line.substr(1, 5), 0, 16);
       }
     } else if (line[0] == '$') {
+      printf("String: %s Length: %d\n", line.c_str(), strlen(line.c_str()));
       for (int f = 1; f <= strlen(line.c_str()) - 1; f++) {
-        // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
+        data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
         data[g] = line[f];
+        printf("Putting hex %x\n", data[g]);
         g++;
       }
-      // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
+      data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
       data[g] = 0;
+      printf("Putting hex %x for ending string\n", data[g]);
       g++;
     }
 #ifdef VIZ4WEB
@@ -335,26 +338,33 @@ uint16_t *compile(string code, uint16_t *data_size) {
 #else
     else if (line[0] != '#' && line[0] != ':') {
 #endif
-
 #ifdef DEBUG
       printf("%s\n", line.c_str());
 #endif
 
-      
       uint16_t *compiled = convert(line);
-      // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 4));
+      if(compiled[0] == 0 && compiled[1] == 0 && compiled[2] == 0 && compiled[3] == 0){
+        printf("SKIPPING! ILLEGAL INSTRUCTION!\n");
+        continue;
+      }
+      data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 4));
       data[g] = compiled[0];
+      printf("Putting hex %x inst\n", data[g]);
       g++;
       data[g] = compiled[1];
+      printf("Putting hex %x inst\n", data[g]);
       g++;
       data[g] = compiled[2];
+      printf("Putting hex %x inst\n", data[g]);
       g++;
       data[g] = compiled[3];
+      printf("Putting hex %x inst\n", data[g]);
       g++;
 #ifdef DEBUG
       printf("\n");
 #endif
     }
+    printf("End one line\n");
   }
   *data_size = g;
   return data;
