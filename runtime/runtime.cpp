@@ -30,11 +30,14 @@ int main(int argc, char *argv[]) {
   srand(time(NULL));
   string data;
   virtualmachine machinestate;
+  std::string infile;
   if (argc < 2) {
-      std::cerr << "No input file given\n";
-      return -1;
+      std::cout << "Enter input file name:";
+      std::cin >> infile;
+  } else {
+    infile = argv[1];
   }
-  std::ifstream file(argv[1], std::ios::binary);
+  std::ifstream file(infile, std::ios::binary);
 #ifdef VIZ4WEB
   regex_t regex;
   int reti;

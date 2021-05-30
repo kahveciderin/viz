@@ -27,15 +27,21 @@
 int main(int argc, char *argv[]) {
     srand(time(NULL));
     std::string data;
+    std::string infile;
+    std::string outfile;
     if (argc < 2) {    
-        std::cerr << "No input file given\n";
-        return -1;
+        std::cout << "Enter input file name:";
+        std::cin >> infile;
+    } else {
+        infile = argv[1];
     }
-    std::ifstream file(argv[1]);
-        if (argc < 3) {
-            std::cerr << "No output file given\n";
-            return -1;
-        }
+    std::ifstream file(infile);
+    if (argc < 3) {
+        std::cout << "Enter output file name:";
+        std::cin >> outfile;
+    } else {
+        outfile = argv[2];
+    }
     std::string line;
     while (getline(file, line)) {
 #ifdef VIZ4WEB
@@ -63,7 +69,7 @@ int main(int argc, char *argv[]) {
     uint16_t *datasize;
     uint16_t *a = compile(data + "\n", datasize);
     char *fbuff = new char[*datasize * 2];
-    std::ofstream output_file(argv[2]);
+    std::ofstream output_file(outfile);
     for (uint32_t i = 0; i < *datasize; i++) {
         fbuff[2 * i] = a[i] >> 8;
         fbuff[1 + (2 * i)] = a[i] & 0xFF;
