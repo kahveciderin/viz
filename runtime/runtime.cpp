@@ -25,10 +25,9 @@
 #ifdef VIZ4WEB
 #include <regex.h>
 #endif
-using namespace std;
 int main(int argc, char *argv[]) {
   srand(time(NULL));
-  string data;
+  std::string data;
   virtualmachine machinestate;
   std::string infile;
   if (argc < 2) {
