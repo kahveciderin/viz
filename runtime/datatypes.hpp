@@ -44,7 +44,7 @@ class virtualmachine {
   uint16_t fixed0=0;
   uint16_t fixed1=0;
   bool halt=false;
-  std::map<uint16_t, device> devices = {};
+  std::map<uint16_t, device*> devices = {};
 };
 
 class device {

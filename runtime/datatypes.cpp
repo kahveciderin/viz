@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <iostream>
 #endif
+
 void device::init(virtualmachine *mach) {
   machine = mach;
 }

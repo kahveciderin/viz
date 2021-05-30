@@ -5,11 +5,13 @@
 #include <cmath>
 #include <ios>
 #include <iostream>
+#include <map>
 #include <random>
 
 #ifdef DEBUG
 #include <iomanip>
-const std::array<char, 16> regnames = {'A', 'B', 'X', 'Y', 'Z', 'F', 'H', 'I', 'N', 'C', 'a', 'b', 'c', 'h', 'n', 'z'};
+const std::array<char, 16> regnames = {'A', 'B', 'X', 'Y', 'Z', 'F', 'H', 'I',
+                                       'N', 'C', 'a', 'b', 'c', 'h', 'n', 'z'};
 const std::array<char, 5> addrmodenames = {'#', '$', '&', '!', '?'};
 #endif
 
@@ -31,31 +33,29 @@ bool run(virtualmachine *machine) {
   char reg0 = 'A';
   char reg1 = 'A';
 #endif
-  std::array<uint16_t *, 16> regmap = {
-    &(machine->regA),
-    &(machine->regB),
-    &(machine->regX),
-    &(machine->regY),
-    &(machine->regZ),
-    &(machine->regF),
-    &(machine->regH),
-    &(machine->pc),
-    &(machine->fixed0),
-    &(machine->regC),
-    &(machine->addrspace[machine->regA]),
-    &(machine->addrspace[machine->regB]),
-    &(machine->addrspace[machine->regZ]),
-    &(machine->addrspace[machine->regH]),
-    &(machine->addrspace[machine->fixed0]),
-    &(machine->addrspace[machine->regC])
-  };
+  std::array<uint16_t *, 16> regmap = {&(machine->regA),
+                                       &(machine->regB),
+                                       &(machine->regX),
+                                       &(machine->regY),
+                                       &(machine->regZ),
+                                       &(machine->regF),
+                                       &(machine->regH),
+                                       &(machine->pc),
+                                       &(machine->fixed0),
+                                       &(machine->regC),
+                                       &(machine->addrspace[machine->regA]),
+                                       &(machine->addrspace[machine->regB]),
+                                       &(machine->addrspace[machine->regZ]),
+                                       &(machine->addrspace[machine->regH]),
+                                       &(machine->addrspace[machine->fixed0]),
+                                       &(machine->addrspace[machine->regC])};
   uint16_t *out0 = regmap[registers >> 4];
   regmap[8] = &(machine->fixed1);
   regmap[14] = &(machine->addrspace[machine->fixed1]);
 
-  #ifdef DEBUG
+#ifdef DEBUG
   reg0 = regnames[registers >> 4];
-  #endif
+#endif
   uint16_t *out1 = regmap[registers & 0xF];
 #ifdef DEBUG
   reg1 = regnames[registers & 0xFF];
@@ -96,48 +96,22 @@ bool run(virtualmachine *machine) {
     adrdbg = addrmodenames[addrmode];
   }
   const std::array<std::string, 31> commands = {
-    "NOP", 
-    "ADD", 
-    "SUB", 
-    "MUL", 
-    "DIV", 
-    "CMP", 
-    "JMP", 
-    "GFX", 
-    "AND", 
-    "NOT", 
-    "OOR", 
-    "XOR", 
-    "INP", 
-    "OUT", 
-    "RSH", 
-    "LSH", 
-    "SET", 
-    "GET", 
-    "JOZ", 
-    "RND", 
-    "MOV", 
-    "PSH", 
-    "POP", 
-    "MOD", 
-    "HLT", 
-    "JNZ", 
-    "POW", 
-    "CAL", 
-    "RET", 
-    "CON", 
-    "DCN"
-  };
+      "NOP", "ADD", "SUB", "MUL", "DIV", "CMP", "JMP", "GFX",
+      "AND", "NOT", "OOR", "XOR", "INP", "OUT", "RSH", "LSH",
+      "SET", "GET", "JOZ", "RND", "MOV", "PSH", "POP", "MOD",
+      "HLT", "JNZ", "POW", "CAL", "RET", "CON", "DCN"};
   std::cout << "\n\nProgram Counter: " << std::dec << machine->pc << "\n"
-  << "OPCODE:" << commands[opcode] << adrdbg << reg0 << reg1 << std::hex << std::setfill('0') << std::setw(4) << " " << data0 << " " << data1 << "\n"
-  << "A: 0x" << machine->regA << "\n"
-  << "B: 0x" << machine->regB << "\n"
-  << "C: 0x" << machine->regC << "\n"
-  << "X: 0x" << machine->regX << "\n"
-  << "Y: 0x" << machine->regY << "\n"
-  << "Z: 0x" << machine->regZ << "\n"
-  << "F: 0x" << machine->regF << "\n"
-  << "H: 0x" << machine->regH << "\n";
+            << "OPCODE:" << commands[opcode] << adrdbg << reg0 << reg1
+            << std::hex << std::setfill('0') << std::setw(4) << " " << data0
+            << " " << data1 << "\n"
+            << "A: 0x" << machine->regA << "\n"
+            << "B: 0x" << machine->regB << "\n"
+            << "C: 0x" << machine->regC << "\n"
+            << "X: 0x" << machine->regX << "\n"
+            << "Y: 0x" << machine->regY << "\n"
+            << "Z: 0x" << machine->regZ << "\n"
+            << "F: 0x" << machine->regF << "\n"
+            << "H: 0x" << machine->regH << "\n";
   std::flush(std::cout);
 #endif
   bool inc = true;
@@ -228,25 +202,12 @@ bool run(virtualmachine *machine) {
     break;
 
   case 0x000C: // INP: get a value
-
-    if (data0 == 0) { { {
-      unsigned char t = 0;
-      std::cin >> t;
-      data1 = t;
-    } } } else {
-      data1 = machine->devices[data0].out();
-    }
+    data1 = machine->devices[data0]->out();
     *out1 = data1;
     break;
 
   case 0x000D: // OUT: send a value
-
-    if (data0 == 0) {
-      std::cout << static_cast<char>(data1);
-    } else {
-      machine->devices[data0].in(data1);
-    }
-
+    machine->devices[data0]->in(data1);
     break;
 
   case 0x000E: // RSH: binary right shift second value by first value and write
@@ -325,14 +286,15 @@ bool run(virtualmachine *machine) {
     inc = false;
     break;
   case 0x001D: // CON
-    /*
     switch (data1) {
     case 0:
-      machine->devices[data0] = (device *)new device_type::console;
-      machine->devices[data0]->init(machine);
+      // machine->devices[data0] = (device *)new device_type::console;
+      // machine->devices[data0]->init(machine);
+      machine->devices.insert({data0, (device*)new device_type::console});
+      break;
+    default:
       break;
     }
-    */
     break;
   case 0x001E: // DCN
     machine->devices.erase(data0);
