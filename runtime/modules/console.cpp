@@ -1,4 +1,4 @@
-#include "../datatypes.h"
+#include "../datatypes.hpp"
 #include "console.h"
 
 using namespace device_type;
@@ -11,9 +11,11 @@ uint16_t console::run(){
     
 }
 uint16_t console::out(){
-
+    uint16_t return_value;
+    scanf("%c", (char *)&return_value);
+    return return_value;
 }
 
 void console::in(uint16_t data){
-
+    printf("%c", data);
 }

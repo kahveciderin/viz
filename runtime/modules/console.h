@@ -1,4 +1,4 @@
-#include "../datatypes.h"
+#include "../datatypes.hpp"
 
 namespace device_type {
 class console : device {
