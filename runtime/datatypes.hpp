@@ -62,8 +62,10 @@ class device {
   void init(virtualmachine *mach);
 
  public:
-  void in(uint16_t data);
+  virtual void in(uint16_t data);
 
  public:
-  uint16_t out();
+  virtual uint16_t out();
+
+  void terminate();
 };
