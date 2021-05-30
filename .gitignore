@@ -42,8 +42,8 @@
 *.log
 
 build/*
-.*/
-
+.clangd/
+.git/
 compile_commands.json
 
 assembler/vsm
