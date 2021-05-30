@@ -17,6 +17,7 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 #include "functions_runtime.hpp"
+#include "modules_enable.h"
 #include <bits/stdint-uintn.h>
 #include <cstdint>
 #include <fstream>
@@ -61,7 +62,7 @@ int main(int argc, char *argv[]) {
         machinestate.addrspace[i] = 0;
       }
     }
-    
+    machinestate.devices.insert({0, (device*)new device_type::console});
     machinestate.push = false;
     machinestate.halt = false;
   #ifdef DEBUG

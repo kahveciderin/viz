@@ -31,6 +31,8 @@
 *.out
 *.app
 
+.ccls_cache/
+
 # VIZ assembly files
 *.s
 *.vz

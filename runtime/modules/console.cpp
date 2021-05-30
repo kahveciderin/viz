@@ -6,7 +6,6 @@ uint16_t device_type::console::run(){
     return 0;
 }
 uint16_t device_type::console::out(){
-    uint16_t return_value = 0;
     unsigned char t = 0;
     std::cin >> t;
     return t;
