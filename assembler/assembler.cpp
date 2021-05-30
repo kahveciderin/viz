@@ -36,6 +36,10 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
     }
     std::ifstream file(infile);
+    if (!file) {
+        std::cerr << "Input file failed to open!\n";
+        return -1;
+    }
     if (argc < 3) {
         std::cout << "Enter output file name: ";
         std::cin >> outfile;
