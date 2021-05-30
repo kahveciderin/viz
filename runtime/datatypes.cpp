@@ -49,5 +49,10 @@ uint16_t device::run() {
   return 0;
 }
 
+void device::terminate() {
+  return;
+}
+
+
 device::~device() {
 }
