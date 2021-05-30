@@ -1,5 +1,5 @@
 #include <string>
-#include "functions_assembler.h"
+#include "functions_assembler.hpp"
 uint16_t opcode_to_code(std::string cmd) {
   uint16_t retval = 0x0;
   switch (str2int(cmd.c_str())) {
