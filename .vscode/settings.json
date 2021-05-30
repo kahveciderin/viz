@@ -7,5 +7,10 @@
         "string_view": "c",
         "cmath": "cpp"
     },
-    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 2, ColumnLimit: 0, SortIncludes: false}"
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 2, ColumnLimit: 0, SortIncludes: false}",
+    "workbench.colorCustomizations": {},
+    "ccls.clang.extraArgs": [
+        "-DRUNTIME",
+        "-DASSEMBLER"
+    ]
 }

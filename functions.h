@@ -36,7 +36,7 @@ constexpr unsigned int str2intc(const char* str, int h = 0){
 }
 
 uint16_t* convert(string line);
-uint16_t* compile(string code);
+uint16_t* compile(string code, uint16_t* data_size);
 
 bool run(virtualmachine* machine);
 bool check(virtualmachine* machine);

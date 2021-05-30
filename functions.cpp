@@ -17,193 +17,194 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "definitions.h"
-#include "datatypes.h"
 #include "functions.h"
+#include "datatypes.h"
+#include "definitions.h"
 #include "switch.h"
 
-#include <math.h>
 #include <ctype.h>
+#include <math.h>
 #include <stdint.h>
 #include <string.h>
 #include <string>
 
 using namespace std;
 
-unsigned int str2int(const char* str, int h) {
+unsigned int str2int(const char *str, int h) {
   return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
 
-uint16_t* convert(string line) {
+#ifdef ASSEMBLER
+uint16_t *convert(string line) {
   static uint16_t data[4];
-  /* 
-     * (As hex)
-     * First four digits are opcodes
-     * Next two digits are addressing modes
-     * Next two digits are register select (in which register the result will be)
-     * Next eight digits are data (little endian)
-     */
+  /*
+   * (As hex)
+   * First four digits are opcodes
+   * Next two digits are addressing modes
+   * Next two digits are register select (in which register the result will be)
+   * Next eight digits are data (little endian)
+   */
   string cmd;
   cmd += line[0];
   cmd += line[1];
   cmd += line[2];
 
-  /* 
-     * OPCODES:
-     * 
-     */
+  /*
+   * OPCODES:
+   *
+   */
 
   /*
-     * ADDRESSING MODES (IN HEX):
-     * 0 value      #
-     * 1 x indexed  $
-     * 2 y indexed  &
-     * 3 xy indexed !
-     * 4 yx indexed ?
-     */
+   * ADDRESSING MODES (IN HEX):
+   * 0 value      #
+   * 1 x indexed  $
+   * 2 y indexed  &
+   * 3 xy indexed !
+   * 4 yx indexed ?
+   */
 
   /*
-     * REGISTER SELECT (IN HEX):
-     * 0 A
-     * 1 B
-     * 2 X
-     * 3 Y
-     * 4 Z
-     * 5 (F)COLOR
-     * 6 H
-     * 7 (I)INSTRUCTION POINTER
-     * 8 (N)FIXED
-     */
+   * REGISTER SELECT (IN HEX):
+   * 0 A
+   * 1 B
+   * 2 X
+   * 3 Y
+   * 4 Z
+   * 5 (F)COLOR
+   * 6 H
+   * 7 (I)INSTRUCTION POINTER
+   * 8 (N)FIXED
+   */
 
   /*
-     * ADD$_A 000000FF ;adds 0xFF to the register A
-     * 
-     */
+   * ADD$_A 000000FF ;adds 0xFF to the register A
+   *
+   */
 
-  0 [data] = opcode_to_code(cmd);
+  data[0] = opcode_to_code(cmd);
 
   switch (line[3]) {
-    case '#':
-      1 [data] = 0x00;
-      break;
-    case '$':
-      1 [data] = 0x01;
-      break;
-    case '&':
-      1 [data] = 0x02;
-      break;
-    case '!':
-      data[1] = 0x03;
-      break;
-    case '?':
-      data[1] = 0x04;
-      break;
+  case '#':
+    data[1] = 0x00;
+    break;
+  case '$':
+    data[1] = 0x01;
+    break;
+  case '&':
+    data[1] = 0x02;
+    break;
+  case '!':
+    data[1] = 0x03;
+    break;
+  case '?':
+    data[1] = 0x04;
+    break;
   }
 
   data[1] = data[1] << 4;
 
   switch (line[4]) {
-    case 'A':
-      data[1] += 0;
-      break;
-    case 'B':
-      data[1] += 1;
-      break;
-    case 'X':
-      data[1] += 2;
-      break;
-    case 'Y':
-      data[1] += 3;
-      break;
-    case 'Z':
-      data[1] += 4;
-      break;
-    case 'F':
-      data[1] += 5;
-      break;
-    case 'H':
-      data[1] += 6;
-      break;
-    case 'I':
-      data[1] += 7;
-      break;
-    case 'N':
-      data[1] += 8;
-      break;
-    case 'C':
-      data[1] += 9;
-      break;
-    case 'a':
-      data[1] += 0xA;
-      break;
-    case 'b':
-      data[1] += 0xB;
-      break;
-    case 'z':
-      data[1] += 0xC;
-      break;
-    case 'h':
-      data[1] += 0xD;
-      break;
-    case 'n':
-      data[1] += 0xE;
-      break;
-    case 'c':
-      data[1] += 0xF;
-      break;
+  case 'A':
+    data[1] += 0;
+    break;
+  case 'B':
+    data[1] += 1;
+    break;
+  case 'X':
+    data[1] += 2;
+    break;
+  case 'Y':
+    data[1] += 3;
+    break;
+  case 'Z':
+    data[1] += 4;
+    break;
+  case 'F':
+    data[1] += 5;
+    break;
+  case 'H':
+    data[1] += 6;
+    break;
+  case 'I':
+    data[1] += 7;
+    break;
+  case 'N':
+    data[1] += 8;
+    break;
+  case 'C':
+    data[1] += 9;
+    break;
+  case 'a':
+    data[1] += 0xA;
+    break;
+  case 'b':
+    data[1] += 0xB;
+    break;
+  case 'z':
+    data[1] += 0xC;
+    break;
+  case 'h':
+    data[1] += 0xD;
+    break;
+  case 'n':
+    data[1] += 0xE;
+    break;
+  case 'c':
+    data[1] += 0xF;
+    break;
   }
 
   data[1] = data[1] << 4;
 
   switch (line[5]) {
-    case 'A':
-      data[1] += 0;
-      break;
-    case 'B':
-      data[1] += 1;
-      break;
-    case 'X':
-      data[1] += 2;
-      break;
-    case 'Y':
-      data[1] += 3;
-      break;
-    case 'Z':
-      data[1] += 4;
-      break;
-    case 'F':
-      data[1] += 5;
-      break;
-    case 'H':
-      data[1] += 6;
-      break;
-    case 'I':
-      data[1] += 7;
-      break;
-    case 'N':
-      data[1] += 8;
-      break;
-    case 'C':
-      data[1] += 9;
-      break;
-    case 'a':
-      data[1] += 0xA;
-      break;
-    case 'b':
-      data[1] += 0xB;
-      break;
-    case 'z':
-      data[1] += 0xC;
-      break;
-    case 'h':
-      data[1] += 0xD;
-      break;
-    case 'n':
-      data[1] += 0xE;
-      break;
-    case 'c':
-      data[1] += 0xF;
-      break;
+  case 'A':
+    data[1] += 0;
+    break;
+  case 'B':
+    data[1] += 1;
+    break;
+  case 'X':
+    data[1] += 2;
+    break;
+  case 'Y':
+    data[1] += 3;
+    break;
+  case 'Z':
+    data[1] += 4;
+    break;
+  case 'F':
+    data[1] += 5;
+    break;
+  case 'H':
+    data[1] += 6;
+    break;
+  case 'I':
+    data[1] += 7;
+    break;
+  case 'N':
+    data[1] += 8;
+    break;
+  case 'C':
+    data[1] += 9;
+    break;
+  case 'a':
+    data[1] += 0xA;
+    break;
+  case 'b':
+    data[1] += 0xB;
+    break;
+  case 'z':
+    data[1] += 0xC;
+    break;
+  case 'h':
+    data[1] += 0xD;
+    break;
+  case 'n':
+    data[1] += 0xE;
+    break;
+  case 'c':
+    data[1] += 0xF;
+    break;
   }
 
   if (line[6] == ' ') {
@@ -223,10 +224,9 @@ uint16_t* convert(string line) {
   }
   return data;
 }
-
-uint16_t* compile(string code) {
-  static uint16_t data[0x10000];
-  int g = 0;
+uint16_t *compile(string code, uint16_t *data_size) {
+  static uint16_t *data = new uint16_t[0x10000];
+  uint16_t g = 0;
 
   label labels[0x10000];
 
@@ -263,10 +263,10 @@ uint16_t* compile(string code) {
       g += 4;
     }
     if (line[0] == '$') {
-      //printf("%d", g);
+      // printf("%d", g);
       g += strlen(line.c_str());
       g -= 4;
-      //printf(" %d\n", g);
+      // printf(" %d\n", g);
     }
 
     if (line[0] == ':') {
@@ -293,11 +293,13 @@ uint16_t* compile(string code) {
     string tof(val);
     int index;
     while ((index = code.find(fromf + " ")) != string::npos) {
-      code.replace(index, fromf.length(), tof);  //remove and replace from that position
+      code.replace(index, fromf.length(),
+                   tof); // remove and replace from that position
     }
     index = 0;
     while ((index = code.find(fromf + "\n")) != string::npos) {
-      code.replace(index, fromf.length(), tof);  //remove and replace from that position
+      code.replace(index, fromf.length(),
+                   tof); // remove and replace from that position
     }
   }
 
@@ -320,10 +322,11 @@ uint16_t* compile(string code) {
       }
     } else if (line[0] == '$') {
       for (int f = 1; f <= strlen(line.c_str()) - 1; f++) {
+        // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
         data[g] = line[f];
         g++;
       }
-
+      // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 1));
       data[g] = 0;
       g++;
     }
@@ -337,7 +340,9 @@ uint16_t* compile(string code) {
       printf("%s\n", line.c_str());
 #endif
 
-      uint16_t* compiled = convert(line);
+      
+      uint16_t *compiled = convert(line);
+      // data = (uint16_t *)realloc(data, sizeof(uint16_t) * (g + 4));
       data[g] = compiled[0];
       g++;
       data[g] = compiled[1];
@@ -351,14 +356,16 @@ uint16_t* compile(string code) {
 #endif
     }
   }
-
+  *data_size = g;
   return data;
 }
+#endif
 
-bool run(virtualmachine* machine) {
+#ifdef RUNTIME
+bool run(virtualmachine *machine) {
   uint16_t opcode = machine->addrspace[machine->pc];
 
-  //extract instruction data
+  // extract instruction data
   uint16_t tmppc = machine->pc;
   bool pull = false;
   uint8_t addrmode = (machine->addrspace[machine->pc + 1] & 0xFF00) >> 8;
@@ -367,201 +374,201 @@ bool run(virtualmachine* machine) {
   machine->fixed0 = machine->addrspace[machine->pc + 2];
   machine->fixed1 = machine->addrspace[machine->pc + 3];
 
-  uint16_t* out0;
+  uint16_t *out0;
 #ifdef DEBUG
   char reg0 = 'A';
   char reg1 = 'A';
 #endif
   switch (registers >> 4) {
-    case 0:
-      out0 = &(machine->regA);
-      break;
-    case 1:
-      out0 = &(machine->regB);
+  case 0:
+    out0 = &(machine->regA);
+    break;
+  case 1:
+    out0 = &(machine->regB);
 #ifdef DEBUG
-      reg0 = 'B';
+    reg0 = 'B';
 #endif
-      break;
-    case 2:
-      out0 = &(machine->regX);
+    break;
+  case 2:
+    out0 = &(machine->regX);
 #ifdef DEBUG
-      reg0 = 'X';
+    reg0 = 'X';
 #endif
-      break;
-    case 3:
-      out0 = &(machine->regY);
+    break;
+  case 3:
+    out0 = &(machine->regY);
 #ifdef DEBUG
-      reg0 = 'Y';
+    reg0 = 'Y';
 #endif
-      break;
-    case 4:
-      out0 = &(machine->regZ);
+    break;
+  case 4:
+    out0 = &(machine->regZ);
 #ifdef DEBUG
-      reg0 = 'Z';
+    reg0 = 'Z';
 #endif
-      break;
-    case 5:
-      out0 = &(machine->regF);
+    break;
+  case 5:
+    out0 = &(machine->regF);
 #ifdef DEBUG
-      reg0 = 'F';
+    reg0 = 'F';
 #endif
-      break;
-    case 6:
-      out0 = &(machine->regH);
+    break;
+  case 6:
+    out0 = &(machine->regH);
 #ifdef DEBUG
-      reg0 = 'H';
+    reg0 = 'H';
 #endif
-      break;
-    case 7:
-      out0 = &(machine->pc);
+    break;
+  case 7:
+    out0 = &(machine->pc);
 #ifdef DEBUG
-      reg0 = 'I';
+    reg0 = 'I';
 #endif
-      break;
-    case 8:
-      out0 = &(machine->fixed0);
+    break;
+  case 8:
+    out0 = &(machine->fixed0);
 #ifdef DEBUG
-      reg0 = 'N';
+    reg0 = 'N';
 #endif
-      break;
-    case 9:
-      out0 = &(machine->regC);
+    break;
+  case 9:
+    out0 = &(machine->regC);
 #ifdef DEBUG
-      reg0 = 'C';
+    reg0 = 'C';
 #endif
-      break;
-    case 0xA:
-      out0 = &(machine->addrspace[machine->regA]);
+    break;
+  case 0xA:
+    out0 = &(machine->addrspace[machine->regA]);
 #ifdef DEBUG
-      reg0 = 'a';
+    reg0 = 'a';
 #endif
-      break;
-    case 0xB:
-      out0 = &(machine->addrspace[machine->regB]);
+    break;
+  case 0xB:
+    out0 = &(machine->addrspace[machine->regB]);
 #ifdef DEBUG
-      reg0 = 'b';
+    reg0 = 'b';
 #endif
-      break;
-    case 0xC:
-      out0 = &(machine->addrspace[machine->regZ]);
+    break;
+  case 0xC:
+    out0 = &(machine->addrspace[machine->regZ]);
 #ifdef DEBUG
-      reg0 = 'z';
+    reg0 = 'z';
 #endif
-      break;
-    case 0xD:
-      out0 = &(machine->addrspace[machine->regH]);
+    break;
+  case 0xD:
+    out0 = &(machine->addrspace[machine->regH]);
 #ifdef DEBUG
-      reg0 = 'a';
+    reg0 = 'a';
 #endif
-      break;
-    case 0xE:
-      out0 = &(machine->addrspace[machine->fixed0]);
+    break;
+  case 0xE:
+    out0 = &(machine->addrspace[machine->fixed0]);
 #ifdef DEBUG
-      reg0 = 'n';
+    reg0 = 'n';
 #endif
-      break;
-    case 0xF:
-      out0 = &(machine->addrspace[machine->regC]);
+    break;
+  case 0xF:
+    out0 = &(machine->addrspace[machine->regC]);
 #ifdef DEBUG
-      reg0 = 'c';
+    reg0 = 'c';
 #endif
   }
 
-  uint16_t* out1;
+  uint16_t *out1;
   switch (registers & 0xF) {
-    case 0:
-      out1 = &(machine->regA);
-      break;
-    case 1:
-      out1 = &(machine->regB);
+  case 0:
+    out1 = &(machine->regA);
+    break;
+  case 1:
+    out1 = &(machine->regB);
 #ifdef DEBUG
-      reg1 = 'B';
+    reg1 = 'B';
 #endif
-      break;
-    case 2:
-      out1 = &(machine->regX);
+    break;
+  case 2:
+    out1 = &(machine->regX);
 #ifdef DEBUG
-      reg1 = 'X';
+    reg1 = 'X';
 #endif
-      break;
-    case 3:
-      out1 = &(machine->regY);
+    break;
+  case 3:
+    out1 = &(machine->regY);
 #ifdef DEBUG
-      reg1 = 'Y';
+    reg1 = 'Y';
 #endif
-      break;
-    case 4:
-      out1 = &(machine->regZ);
+    break;
+  case 4:
+    out1 = &(machine->regZ);
 #ifdef DEBUG
-      reg1 = 'Z';
+    reg1 = 'Z';
 #endif
-      break;
-    case 5:
-      out1 = &(machine->regF);
+    break;
+  case 5:
+    out1 = &(machine->regF);
 #ifdef DEBUG
-      reg1 = 'F';
+    reg1 = 'F';
 #endif
-      break;
-    case 6:
-      out1 = &(machine->regH);
+    break;
+  case 6:
+    out1 = &(machine->regH);
 #ifdef DEBUG
-      reg1 = 'H';
+    reg1 = 'H';
 #endif
-      break;
-    case 7:
-      out1 = &(machine->pc);
+    break;
+  case 7:
+    out1 = &(machine->pc);
 #ifdef DEBUG
-      reg1 = 'I';
+    reg1 = 'I';
 #endif
-      break;
-    case 8:
-      out1 = &(machine->fixed1);
+    break;
+  case 8:
+    out1 = &(machine->fixed1);
 #ifdef DEBUG
-      reg1 = 'N';
+    reg1 = 'N';
 #endif
-      break;
-    case 9:
-      out1 = &(machine->regC);
+    break;
+  case 9:
+    out1 = &(machine->regC);
 #ifdef DEBUG
-      reg1 = 'C';
+    reg1 = 'C';
 #endif
-      break;
-    case 0xA:
-      out1 = &(machine->addrspace[machine->regA]);
+    break;
+  case 0xA:
+    out1 = &(machine->addrspace[machine->regA]);
 #ifdef DEBUG
-      reg1 = 'a';
+    reg1 = 'a';
 #endif
-      break;
-    case 0xB:
-      out1 = &(machine->addrspace[machine->regB]);
+    break;
+  case 0xB:
+    out1 = &(machine->addrspace[machine->regB]);
 #ifdef DEBUG
-      reg1 = 'b';
+    reg1 = 'b';
 #endif
-      break;
-    case 0xC:
-      out1 = &(machine->addrspace[machine->regZ]);
+    break;
+  case 0xC:
+    out1 = &(machine->addrspace[machine->regZ]);
 #ifdef DEBUG
-      reg1 = 'z';
+    reg1 = 'z';
 #endif
-      break;
-    case 0xD:
-      out1 = &(machine->addrspace[machine->regH]);
+    break;
+  case 0xD:
+    out1 = &(machine->addrspace[machine->regH]);
 #ifdef DEBUG
-      reg1 = 'a';
+    reg1 = 'a';
 #endif
-      break;
-    case 0xE:
-      out1 = &(machine->addrspace[machine->fixed1]);
+    break;
+  case 0xE:
+    out1 = &(machine->addrspace[machine->fixed1]);
 #ifdef DEBUG
-      reg1 = 'n';
+    reg1 = 'n';
 #endif
-      break;
-    case 0xF:
-      out1 = &(machine->addrspace[machine->regC]);
+    break;
+  case 0xF:
+    out1 = &(machine->addrspace[machine->regC]);
 #ifdef DEBUG
-      reg1 = 'c';
+    reg1 = 'c';
 #endif
-      break;
+    break;
   }
 
 #ifdef DEBUG
@@ -571,242 +578,253 @@ bool run(virtualmachine* machine) {
   uint16_t data1 = *out1;
 
   switch (addrmode) {
-    case 0:
-      break;
+  case 0:
+    break;
 
-    case 1:
-      data1 += machine->regX;
+  case 1:
+    data1 += machine->regX;
 #ifdef DEBUG
-      adrdbg = '$';
+    adrdbg = '$';
 #endif
-      break;
+    break;
 
-    case 2:
-      data1 += machine->regY;
+  case 2:
+    data1 += machine->regY;
 #ifdef DEBUG
-      adrdbg = '&';
+    adrdbg = '&';
 #endif
-      break;
+    break;
 
-    case 3:
-      data1 += machine->regX;
-      data0 += machine->regY;
+  case 3:
+    data1 += machine->regX;
+    data0 += machine->regY;
 #ifdef DEBUG
-      adrdbg = '!';
+    adrdbg = '!';
 #endif
-      break;
+    break;
 
-    case 4:
-      data1 += machine->regY;
-      data0 += machine->regX;
+  case 4:
+    data1 += machine->regY;
+    data0 += machine->regX;
 #ifdef DEBUG
-      adrdbg = '?';
+    adrdbg = '?';
 #endif
-      break;
+    break;
   }
 
 #ifdef DEBUG
 
-  printf("\n\nProgram Counter: %d\nOPCODE: %s%c%c%c %04X %04X\nA: 0x%x\nB: 0x%x\nC: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ", machine->pc, commands[opcode].c_str(), adrdbg, reg0, reg1, data0, data1, machine->regA, machine->regB, machine->regC, machine->regX, machine->regY, machine->regZ, machine->regF, machine->regH);
+  printf("\n\nProgram Counter: %d\nOPCODE: %s%c%c%c %04X %04X\nA: 0x%x\nB: "
+         "0x%x\nC: 0x%x\nX: 0x%x\nY: 0x%x\nZ: 0x%x\nF: 0x%x\nH: 0x%x\n\nEcho: ",
+         machine->pc, commands[opcode].c_str(), adrdbg, reg0, reg1, data0,
+         data1, machine->regA, machine->regB, machine->regC, machine->regX,
+         machine->regY, machine->regZ, machine->regF, machine->regH);
   fflush(stdout);
 #endif
   uint16_t data2 = machine->regF;
 
   bool inc = true;
 
-  /* 
-     * We have:
-     * opcode
-     * data0
-     * data1
-     * data2 (regF)
-     * out0
-     * out1
-     */
-  //start program execution
+  /*
+   * We have:
+   * opcode
+   * data0
+   * data1
+   * data2 (regF)
+   * out0
+   * out1
+   */
+  // start program execution
 
-  //left => 0
-  //right => 1
+  // left => 0
+  // right => 1
 
   uint16_t tmp0;
   switch (opcode) {
-    case 0x0000:
-      break;
+  case 0x0000:
+    break;
 
-    case 0x0001:  //ADD: add first value to the second and write to second
-      data0 += data1;
-      *out0 = data0;
-      break;
+  case 0x0001: // ADD: add first value to the second and write to second
+    data0 += data1;
+    *out0 = data0;
+    break;
 
-    case 0x0002:  //SUB: subtract first value from the second and write to the second
-      data0 -= data1;
-      *out0 = data0;
-      break;
+  case 0x0002: // SUB: subtract first value from the second and write to the
+               // second
+    data0 -= data1;
+    *out0 = data0;
+    break;
 
-    case 0x0003:  //MUL: multiply both values and write to the second
-      data0 *= data1;
-      *out0 = data0;
-      break;
+  case 0x0003: // MUL: multiply both values and write to the second
+    data0 *= data1;
+    *out0 = data0;
+    break;
 
-    case 0x0004:  //DIV: divide values and write to the second
-      data0 /= data1;
-      *out0 = data0;
-      break;
+  case 0x0004: // DIV: divide values and write to the second
+    data0 /= data1;
+    *out0 = data0;
+    break;
 
-    case 0x0005:  //CMP: compare two values (ffff if first is bigger, 1 if second is bigger, 0 if equal)
-      tmp0 = data0 > data1 ? 0xffff : 0x0;
-      data1 = data0 < data1 ? 0x1 : tmp0;
-      *out1 = data1;
-      break;
+  case 0x0005: // CMP: compare two values (ffff if first is bigger, 1 if second
+               // is bigger, 0 if equal)
+    tmp0 = data0 > data1 ? 0xffff : 0x0;
+    data1 = data0 < data1 ? 0x1 : tmp0;
+    *out1 = data1;
+    break;
 
-    case 0x0006:  //JMP: jump to an address (second is the base)
-      inc = false;
-      machine->pc = data1;
-      break;
+  case 0x0006: // JMP: jump to an address (second is the base)
+    inc = false;
+    machine->pc = data1;
+    break;
 
-    case 0x0007:  //GFX: open a graphics window (WIP)
+  case 0x0007: // GFX: open a graphics window (WIP)
 
-      break;
+    break;
 
-    case 0x0008:  //AND: and two values and write to the second
-      data1 = data1 & data0;
-      *out1 = data1;
-      break;
+  case 0x0008: // AND: and two values and write to the second
+    data1 = data1 & data0;
+    *out1 = data1;
+    break;
 
-    case 0x0009:  //NOT: invert every single bit
-      data1 = !data1;
-      data0 = !data0;
+  case 0x0009: // NOT: invert every single bit
+    data1 = !data1;
+    data0 = !data0;
 
-      *out1 = data1;
-      *out0 = data0;
-      break;
+    *out1 = data1;
+    *out0 = data0;
+    break;
 
-    case 0x000A:  //OOR: OR two values and write to the second
-      data1 = data1 | data0;
-      *out1 = data1;
-      break;
+  case 0x000A: // OOR: OR two values and write to the second
+    data1 = data1 | data0;
+    *out1 = data1;
+    break;
 
-    case 0x000B:  //XOR: XOR two values and write to the second
-      data1 = data1 ^ data0;
-      *out1 = data1;
-      break;
+  case 0x000B: // XOR: XOR two values and write to the second
+    data1 = data1 ^ data0;
+    *out1 = data1;
+    break;
 
-    case 0x000C:  //INP: get a value
+  case 0x000C: // INP: get a value
 
-      if (data0 == 0)
-        scanf("%c", &data1);
-      else {
-        data1 = machine->devices[data0]->out();
-      }
-      *out1 = data1;
-      break;
+    if (data0 == 0)
+      scanf("%c", &data1);
+    else {
+      data1 = machine->devices[data0]->out();
+    }
+    *out1 = data1;
+    break;
 
-    case 0x000D:  //OUT: send a value
+  case 0x000D: // OUT: send a value
 
-      if (data0 == 0)
-        printf("%c", data1);
-      else {
-        machine->devices[data0]->in(data1);
-      }
+    if (data0 == 0)
+      printf("%c", data1);
+    else {
+      machine->devices[data0]->in(data1);
+    }
 
-      break;
+    break;
 
-    case 0x000E:  //RSH: binary right shift second value by first value and write to the second
-      data1 = data1 >> data0;
-      *out1 = data1;
-      break;
+  case 0x000E: // RSH: binary right shift second value by first value and write
+               // to the second
+    data1 = data1 >> data0;
+    *out1 = data1;
+    break;
 
-    case 0x000F:  //LSH: binary left shift second value by first value and write to the second
-      data1 = data1 << data0;
-      *out1 = data1;
-      break;
+  case 0x000F: // LSH: binary left shift second value by first value and write
+               // to the second
+    data1 = data1 << data0;
+    *out1 = data1;
+    break;
 
-    case 0x0010:  //SET: set first address second value
-      machine->addrspace[data0] = data1;
-      break;
+  case 0x0010: // SET: set first address second value
+    machine->addrspace[data0] = data1;
+    break;
 
-    case 0x0011:  //GET: get first address to the second
-      data1 = machine->addrspace[data0];
-      *out1 = data1;
-      break;
+  case 0x0011: // GET: get first address to the second
+    data1 = machine->addrspace[data0];
+    *out1 = data1;
+    break;
 
-    case 0x0012:  //JOZ: jump to second address if first is zero
-      machine->pc = data0 == 0 ? data1 : machine->pc;
+  case 0x0012: // JOZ: jump to second address if first is zero
+    machine->pc = data0 == 0 ? data1 : machine->pc;
 
-      inc = data0 != 0;
-      break;
+    inc = data0 != 0;
+    break;
 
-    case 0x0013:  //RND: random number
-      *out0 = rand() % 0xFFFF + 1;
-      *out1 = rand() % 0xFFFF + 1;
-      break;
+  case 0x0013: // RND: random number
+    *out0 = rand() % 0xFFFF + 1;
+    *out1 = rand() % 0xFFFF + 1;
+    break;
 
-    case 0x0014:
-      *out1 = data0;
-      break;
+  case 0x0014:
+    *out1 = data0;
+    break;
 
-    case 0x0015:
-      machine->addrspace[0xFF00 + machine->sp] = data0;
-      machine->sp--;
+  case 0x0015:
+    machine->addrspace[0xFF00 + machine->sp] = data0;
+    machine->sp--;
 
-      break;
+    break;
 
-    case 0x0016:
-      machine->sp++;
-      *out1 = machine->addrspace[0xFF00 + machine->sp];
-      break;
+  case 0x0016:
+    machine->sp++;
+    *out1 = machine->addrspace[0xFF00 + machine->sp];
+    break;
 
-    case 0x0017:
-      data0 = data0 % data1;
-      *out0 = data0;
-      break;
+  case 0x0017:
+    data0 = data0 % data1;
+    *out0 = data0;
+    break;
 
-    case 0x0018:
-      machine->halt = true;
-      break;
+  case 0x0018:
+    machine->halt = true;
+    break;
 
-    case 0x0019:  //JNZ: jump to second address if first is not zero
-      machine->pc = data0 != 0 ? data1 : machine->pc;
-      inc = data0 != 0;
-      break;
-    case 0x001A:  //POW: first pow second to first
-      data0 = pow(data0, data1);
-      *out0 = data0;
-      break;
-    case 0x001B:  //CAL: call function
-      machine->addrspace[0xFF00 + machine->sp] = machine->pc + 4;
-      machine->sp--;
-      machine->pc = data1;
-      inc = false;
-      break;
-    case 0x001C:  //RET: return from function
-      machine->sp++;
-      machine->pc = machine->addrspace[0xFF00 + machine->sp];
-      inc = false;
-      break;
-    case 0x001D:  //CON
-      switch (data1) {
-        // device connections here
-      }
-      break;
-    case 0x001E:  //DCN
-      free(machine->devices[data0]);
-      machine->devices[data0] = (device*)0;
-      break;
+  case 0x0019: // JNZ: jump to second address if first is not zero
+    machine->pc = data0 != 0 ? data1 : machine->pc;
+    inc = data0 != 0;
+    break;
+  case 0x001A: // POW: first pow second to first
+    data0 = pow(data0, data1);
+    *out0 = data0;
+    break;
+  case 0x001B: // CAL: call function
+    machine->addrspace[0xFF00 + machine->sp] = machine->pc + 4;
+    machine->sp--;
+    machine->pc = data1;
+    inc = false;
+    break;
+  case 0x001C: // RET: return from function
+    machine->sp++;
+    machine->pc = machine->addrspace[0xFF00 + machine->sp];
+    inc = false;
+    break;
+  case 0x001D: // CON
+    switch (data1) {
+      // device connections here
+    }
+    break;
+  case 0x001E: // DCN
+    free(machine->devices[data0]);
+    machine->devices[data0] = (device *)0;
+    break;
   }
 
-  //end program execution
+  // end program execution
 
-  if ((out0 == &(machine->pc) || out1 == &(machine->pc)) && machine->pc != tmppc) {
+  if ((out0 == &(machine->pc) || out1 == &(machine->pc)) &&
+      machine->pc != tmppc) {
     inc = false;
   }
   machine->pc += inc ? 4 : 0;
   return 0;
 }
-
-bool check(virtualmachine* machine) {
-  if (machine->pc > 0xFFFF) machine->pc = 0;
+bool check(virtualmachine *machine) {
+  if (machine->pc > 0xFFFF)
+    machine->pc = 0;
 
   machine->null = 0;
   return 0;
 }
+
+#endif

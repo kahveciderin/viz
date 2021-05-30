@@ -4,13 +4,25 @@ FILES=$(wildcard *.cpp)
 OBJS=$(patsubst %.cpp, %.o, $(FILES))
 BUILDNAME:=vrk
 
-ifeq ($(BUILDTYPE),DEBUG):
-	FLAGS+=-DDEBUG
+
+ifeq ($(BUILDTYPE),RUNTIME)
+	FLAGS+=-DRUNTIME
+	BUILDNAME=vrk
+endif
+ifeq ($(BUILDTYPE),ASSEMBLER)
+	FLAGS+=-DASSEMBLER
+	BUILDNAME=vsm
+endif
+ifeq ($(BUILDTYPE),DEBUG)
+	FLAGS+=-DDEBUG -DRUNTIME
 	BUILDNAME=vizier
 endif
-ifeq ($(BUILDTYPE),WEB):
-	FLAGS+=-DVIZ4WEB
+ifeq ($(BUILDTYPE),WEB)
+	FLAGS+=-DVIZ4WEB -DASSEMBLER -DRUNTIME
 	BUILDNAME=viz4web
+endif
+ifeq ($(PARAMS),DBG)
+	FLAGS+=-g3 -O0
 endif
 
 

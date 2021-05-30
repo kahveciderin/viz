@@ -17,8 +17,8 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "functions.h"
 #include "definitions.h"
+#include "functions.h"
 #include <cstdint>
 #include <fstream>
 #include <string>
@@ -26,10 +26,12 @@
 #include <regex.h>
 #endif
 using namespace std;
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   srand(time(NULL));
   string data;
   virtualmachine machinestate;
+  if (argc < 2)
+    return printf("No input file given\n");
   ifstream file(argv[1]);
 
 #ifdef VIZ4WEB
@@ -38,12 +40,16 @@ int main(int argc, char* argv[]) {
   reti = regcomp(&regex, "(?<=^>>).*", REG_EXTENDED);
 #endif
 
+#ifdef ASSEMBLER
+  if (argc < 3)
+    return printf("No output file given\n");
+
   string line;
   while (getline(file, line)) {
 #ifdef VIZ4WEB
     reti = regexec(&regex, "abc", 0, NULL, 0);
     if (!reti) {
-      char* code = new char[128];
+      char *code = new char[128];
       sprintf(code, "%.*s", line.length() - 2, line.c_str() + 2);
 
       data += code;
@@ -59,13 +65,19 @@ int main(int argc, char* argv[]) {
     data += "\n";
 #endif
   }
+  uint16_t *datasize;
+  uint16_t *a = compile(data + "\n", datasize);
+  char *fbuff = new char[*datasize * 2];
+  ofstream output_file(argv[2]);
+  for (uint32_t i = 0; i < *datasize; i++) {
+    fbuff[2 * i] = a[i] >> 8;
+    fbuff[1 + (2 * i)] = a[i] & 0xFF;
+  }
+  output_file.write(fbuff, *datasize * 2);
+#endif
 
-  uint16_t* a = compile(data + "\n");
+#ifdef RUNTIME
 
-  /*for(int i = 0; i < 65535; i++){
-        printf("0x%x\n", a[i]);
-    }*/
-  //initscr();
   machinestate.push = false;
   machinestate.halt = false;
   machinestate.addrspace = a;
@@ -75,7 +87,8 @@ int main(int argc, char* argv[]) {
   while (true) {
     run(&machinestate);
     check(&machinestate);
-    if (machinestate.halt) break;
+    if (machinestate.halt)
+      break;
 #ifdef DEBUG
     tinstrun++;
 #endif
@@ -84,6 +97,7 @@ int main(int argc, char* argv[]) {
   printf("\n\nTotal instructions ran: %lu\n", tinstrun);
 #else
   printf("\n");
+#endif
 #endif
 
   return 0;
