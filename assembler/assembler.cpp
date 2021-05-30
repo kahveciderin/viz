@@ -66,14 +66,14 @@ int main(int argc, char *argv[]) {
         data += "\n";
 #endif
     }
-    uint16_t *datasize;
-    uint16_t *a = compile(data + "\n", datasize);
-    char *fbuff = new char[*datasize * 2];
+    uint16_t datasize;
+    uint16_t *a = compile(data + "\n", &datasize);
+    char *fbuff = new char[datasize * 2];
     std::ofstream output_file(outfile);
-    for (uint32_t i = 0; i < *datasize; i++) {
+    for (uint32_t i = 0; i < datasize; i++) {
         fbuff[2 * i] = a[i] >> 8;
         fbuff[1 + (2 * i)] = a[i] & 0xFF;
     }
-    output_file.write(fbuff, *datasize * 2);
+    output_file.write(fbuff, datasize * 2);
     return 0;
 }

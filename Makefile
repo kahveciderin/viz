@@ -4,6 +4,7 @@ FLAGS?=-I.
 ifeq ($(PARAMS),DBG)
 	FLAGS+=-g3 -O0 -Wall -Wextra
 endif
+
 all: vizier vrk vsm4web vsm
 vizier:
 	$(MAKE) -C runtime vizier

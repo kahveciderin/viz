@@ -42,8 +42,18 @@ int main(int argc, char *argv[]) {
   int reti;
   reti = regcomp(&regex, "(?<=^>>).*", REG_EXTENDED);
 #endif
-  uint16_t memcontents[0x10000];
-  file.read((char *)memcontents, sizeof(memcontents));
+  file.seekg(0, std::ios::end);
+  int len = file.tellg();
+  char *mem_8bit = new char[len];
+  file.seekg(0, std::ios::beg);
+  file.read(mem_8bit, len);
+
+  uint16_t *memcontents = new uint16_t[0x10000];
+  for(int i = 0; i < 0x10000; i++){
+    if(i < len) memcontents[i] = (mem_8bit[2 * i] << 8) | mem_8bit[1 + (2 * i)];
+    else memcontents[i] = 0;
+  }
+  
   machinestate.push = false;
   machinestate.halt = false;
   machinestate.addrspace = memcontents;
