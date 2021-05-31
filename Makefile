@@ -18,4 +18,8 @@ vsm4web:
 	$(CC) $< $(FLAGS) -c -o $@
 clean:
 	$(MAKE) -C runtime clean
-	$(MAKE) -C assembler clean
+	$(MAKE) -C assembler 
+assemble_tests: vsm
+	build/vsm hello.viz hello.vsm
+tests: assemble_tests vrk
+	build/vrk hello.vsm
