@@ -17,7 +17,7 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 #include "functions_runtime.hpp"
-#include "modules_enable.h"
+#include "modules_enable.hpp"
 #include <bits/stdint-uintn.h>
 #include <cstdint>
 #include <fstream>
