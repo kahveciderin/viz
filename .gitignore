@@ -52,3 +52,5 @@ assembler/vsm
 assembler/vsm4web
 runtime/vizier
 runtime/vrk
+
+viz_suite.zip

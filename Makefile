@@ -6,6 +6,9 @@ ifeq ($(PARAMS),DBG)
 endif
 
 all: vizier vrk vsm
+release: all
+	$(MAKE) clean
+	zip -r viz_suite.zip build/
 vizier:
 	$(MAKE) -C runtime vizier
 vrk:
