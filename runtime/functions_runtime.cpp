@@ -1,20 +1,18 @@
 #include "datatypes.hpp"
-
 #include "modules_enable.h"
+
 #include <bits/stdint-uintn.h>
 #include <cmath>
 #include <ios>
 #include <iostream>
 #include <map>
 #include <random>
-
 #ifdef DEBUG
 #include <iomanip>
 const std::array<char, 16> regnames = {'A', 'B', 'X', 'Y', 'Z', 'F', 'H', 'I',
                                        'N', 'C', 'a', 'b', 'c', 'h', 'n', 'z'};
 const std::array<char, 5> addrmodenames = {'#', '$', '&', '!', '?'};
 #endif
-
 bool run(virtualmachine *machine) {
   std::random_device randev;
   std::mt19937 rng(randev.entropy());
