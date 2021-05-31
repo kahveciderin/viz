@@ -102,14 +102,14 @@ bool run(virtualmachine *machine) {
             << "OPCODE:" << commands[opcode] << adrdbg << reg0 << reg1
             << std::hex << std::setfill('0') << std::setw(4) << " " << data0
             << " " << data1 << "\n"
-            << "A: 0x" << machine->regA << "\n"
-            << "B: 0x" << machine->regB << "\n"
-            << "C: 0x" << machine->regC << "\n"
-            << "X: 0x" << machine->regX << "\n"
-            << "Y: 0x" << machine->regY << "\n"
-            << "Z: 0x" << machine->regZ << "\n"
-            << "F: 0x" << machine->regF << "\n"
-            << "H: 0x" << machine->regH << "\n";
+            << "A: 0x" << machine->regA << "(" << machine->addrspace[machine->regA] << ")" << "\n"
+            << "B: 0x" << machine->regB << "(" << machine->addrspace[machine->regB] << ")" << "\n"
+            << "C: 0x" << machine->regC << "(" << machine->addrspace[machine->regC] << ")" << "\n"
+            << "X: 0x" << machine->regX << "(" << machine->addrspace[machine->regX] << ")" << "\n"
+            << "Y: 0x" << machine->regY << "(" << machine->addrspace[machine->regY] << ")" << "\n"
+            << "Z: 0x" << machine->regZ << "(" << machine->addrspace[machine->regZ] << ")" << "\n"
+            << "F: 0x" << machine->regF << "(" << machine->addrspace[machine->regF] << ")" << "\n"
+            << "H: 0x" << machine->regH << "(" << machine->addrspace[machine->regH] << ")" << "\n";
   std::flush(std::cout);
 #endif
   bool inc = true;
@@ -286,8 +286,6 @@ bool run(virtualmachine *machine) {
   case 0x001D: // CON
     switch (data1) {
     case 0:
-      // machine->devices[data0] = (device *)new device_type::console;
-      // machine->devices[data0]->init(machine);
       machine->devices.insert({data0, (device*)new device_type::console});
       break;
     default:

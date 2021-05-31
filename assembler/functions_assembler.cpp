@@ -84,7 +84,7 @@ std::array<uint16_t, 4> convert(std::string line) {
   data[1] = data[1] << 4;
 
   if (registerencoding.count(line[5]) > 0) {
-    data[1] |= registerencoding.at(line[4]);
+    data[1] |= registerencoding.at(line[5]);
   } else {
     std::cerr << "Instruction \"" << line
               << "\" cannot be converted: bad right hand register\n";
