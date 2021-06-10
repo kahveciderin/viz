@@ -25,6 +25,7 @@
     "-cppcoreguidelines-pro-bounds-pointer-arithmetic",
     "-*-magic-numbers",
     "-cppcoreguidelines-pro-bounds-constant-array-index",
-    "-hicpp-signed-bitwise"
+    "-hicpp-signed-bitwise",
+    "-llvm-include-order"
     ]
 }
