@@ -18,10 +18,18 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "types.h"
+#include "architecture-dependent/architecture-dependent.h"
+#include "functions_rt_embedded.h"
 int main() {
   //TODO: trashcognito/do proper embeded stuff
   virtualmachine_t vm;
   init_machine(&vm);
-
+  load_program(vm.addrspace);
+  srand(time(NULL));
+  while (do_cycle(&vm)) {
+    //keep running program until false (halted)
+  }
+  return 0;
 }

@@ -182,8 +182,8 @@ bool run(virtualmachine *machine) {
     break;
 
   case 0x0009: // NOT: invert every single bit
-    data1 = static_cast<uint16_t>(static_cast<uint16_t>(data1) == 0U);
-    data0 = static_cast<uint16_t>(static_cast<uint16_t>(data0) == 0U);
+    data1 = ~data1;
+    data0 = ~data0;
 
     *out1 = data1;
     *out0 = data0;

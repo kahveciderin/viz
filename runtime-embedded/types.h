@@ -14,7 +14,6 @@ typedef struct virtualmachine {
   uint8_t sp;
   uint16_t tmpstack;
   bool push;
-  uint16_t null;
   uint16_t fixed0;
   uint16_t fixed1;
   bool halt;

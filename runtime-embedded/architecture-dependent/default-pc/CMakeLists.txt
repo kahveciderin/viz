@@ -3,8 +3,9 @@ project(viz VERSION 0.1.0)
 
 include(CTest)
 cmake_policy(SET CMP0076 NEW)
+cmake_policy(SET CMP0079 NEW)
 target_sources(arch-dep PUBLIC default-pc.c)
-
+target_link_libraries(arch-dep m)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
