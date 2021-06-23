@@ -13,6 +13,17 @@ void load_program(uint16_t *memspace) {
     FILE *infile = fopen(filepath, "r");
     fread(memspace, sizeof(uint16_t), 0x10000, infile);
     fclose(infile);
+    #ifdef __LITTLE_ENDIAN
+        //Viz uses big endian notation. All numbers must be corrected accordingly.
+        for (int i=0;i<0x10000;i++) {
+           //only correct if not zero
+           if (memspace[i]) {
+                uint8_t low = memspace[i] & 0xFF;
+                uint8_t high = memspace[i] >> 8;
+                memspace[i] = (low << 8) | high;
+           }
+        }
+    #endif
 }
 uint16_t in(uint16_t port) {
     uint16_t out = 0;
