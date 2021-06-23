@@ -1,4 +1,5 @@
 #include "../architecture-dependent.h"
+#include <bits/stdint-uintn.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -44,4 +45,7 @@ void out(uint16_t data, uint16_t port) {
 }
 uint16_t pow16(uint16_t x, uint16_t e) {
     return pow(x, e);
+}
+uint16_t entropy() {
+    return random();
 }

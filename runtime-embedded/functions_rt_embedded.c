@@ -161,8 +161,8 @@ bool do_cycle(virtualmachine_t *vm) {
         break;
 
     case 0x0013: // RND: random number
-        *out0 = random() % 0xFFFF + 1;
-        *out1 = random() % 0xFFFF + 1;
+        *out0 = entropy();
+        *out1 = entropy();
         break;
 
     case 0x0014:

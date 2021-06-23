@@ -11,3 +11,5 @@ uint16_t in(uint16_t port);
 void out(uint16_t data, uint16_t port);
 //pow function, x ^ e
 uint16_t pow16(uint16_t x, uint16_t e);
+//randomness function
+uint16_t entropy();
