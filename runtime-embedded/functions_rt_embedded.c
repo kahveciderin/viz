@@ -170,14 +170,14 @@ bool do_cycle(virtualmachine_t *vm) {
         break;
 
     case 0x0015: //PSH: push to stack
-        vm->addrspace[0xFF00 + vm->sp] = data0;
+        vm->addrspace[0xFF00 | vm->sp] = data0;
         vm->sp--;
 
         break;
 
     case 0x0016: //POP: pop from stack
         vm->sp++;
-        *out1 = vm->addrspace[0xFF00 + vm->sp];
+        *out1 = vm->addrspace[0xFF00 | vm->sp];
         break;
 
     case 0x0017: //MOD: modulo
