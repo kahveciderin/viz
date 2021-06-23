@@ -165,27 +165,27 @@ bool do_cycle(virtualmachine_t *vm) {
         *out1 = entropy();
         break;
 
-    case 0x0014:
+    case 0x0014: // MOV: copies the first operand to the second
         *out1 = data0;
         break;
 
-    case 0x0015:
+    case 0x0015: //PSH: push to stack
         vm->addrspace[0xFF00 + vm->sp] = data0;
         vm->sp--;
 
         break;
 
-    case 0x0016:
+    case 0x0016: //POP: pop from stack
         vm->sp++;
         *out1 = vm->addrspace[0xFF00 + vm->sp];
         break;
 
-    case 0x0017:
+    case 0x0017: //MOD: modulo
         data0 = data0 % data1;
         *out0 = data0;
         break;
 
-    case 0x0018:
+    case 0x0018: //HLT: halt the machine
         return false;
         break;
 
