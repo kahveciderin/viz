@@ -202,14 +202,14 @@ bool do_cycle(virtualmachine_t *vm) {
         *out0 = data0;
         break;
     case 0x001B: // CAL: call function
-        vm->addrspace[0xFF00 + vm->sp] = vm->pc + 4;
+        vm->addrspace[0xFF00 | vm->sp] = vm->pc + 4;
         vm->sp--;
         vm->pc = data1;
         inc = false;
         break;
     case 0x001C: // RET: return from function
         vm->sp++;
-        vm->pc = vm->addrspace[0xFF00 + vm->sp];
+        vm->pc = vm->addrspace[0xFF00 | vm->sp];
         inc = false;
         break;
     default:
