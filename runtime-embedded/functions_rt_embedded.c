@@ -79,7 +79,7 @@ bool do_cycle(virtualmachine_t *vm) {
     case 0x0004: // DIV: divide values and write to the second
         if (data1 == 0) {
             vm->halt = true;
-        break;
+            break;
         }
         data0 /= data1;
         *out0 = data0;
@@ -181,6 +181,10 @@ bool do_cycle(virtualmachine_t *vm) {
         break;
 
     case 0x0017: //MOD: modulo
+        if (data1 == 0) {
+            vm->halt = true;
+            break;
+        }
         data0 = data0 % data1;
         *out0 = data0;
         break;
